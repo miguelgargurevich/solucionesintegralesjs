@@ -6,13 +6,13 @@ import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ArrowRight } from 'lucide-react'
 
-// Importar Scene3D dinámicamente para evitar problemas de SSR
-const Scene3D = dynamic(() => import('@/components/3d/Scene3D'), {
+// Importar IndustrialScene dinámicamente para evitar problemas de SSR
+const Scene3D = dynamic(() => import('@/components/3d/IndustrialScene'), {
   ssr: false,
   loading: () => (
-    <div className="absolute inset-0 bg-gradient-industrial flex items-center justify-center">
-      <div className="animate-pulse text-industrial-blue text-2xl font-bold">
-        Cargando experiencia 3D...
+    <div className="absolute inset-0 bg-graphite flex items-center justify-center">
+      <div className="animate-pulse text-industrial-blue text-lg font-medium">
+        Cargando...
       </div>
     </div>
   ),
