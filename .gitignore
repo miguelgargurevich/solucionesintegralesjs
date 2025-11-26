@@ -107,3 +107,13 @@ storybook-static/
 # ================================
 public/sw.js
 public/workbox-*.js
+
+# ================================
+# Documentation & Heavy files
+# ================================
+*.doc
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+PROMPT-*.md
