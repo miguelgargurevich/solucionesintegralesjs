@@ -68,6 +68,13 @@ const AnimatedText = ({ text, className }: { text: string; className?: string })
 // Spring config for smooth animations
 const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
 
+const handleNavClick = (href: string) => {
+  const element = document.querySelector(href)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -149,13 +156,23 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.5 }}
-          className="flex flex-col sm:flex-row gap-4"
+          className="flex flex-col sm:flex-row gap-4 mb-16 md:mb-0"
         >
-          <Button variant="premium" size="xl" className="group">
+          <Button 
+            variant="premium" 
+            size="xl" 
+            className="group"
+            onClick={() => handleNavClick('#contacto')}
+          >
             Solicitar Proyecto
             <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
-          <Button variant="outline" size="xl" className="border-metal-gray/30 dark:border-metal-gray/30 light:border-graphite/30 text-white dark:text-white light:text-white hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-graphite/10">
+          <Button 
+            variant="outline" 
+            size="xl" 
+            className="border-metal-gray/30 dark:border-metal-gray/30 light:border-graphite/30 text-white dark:text-white light:text-graphite hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-graphite/10"
+            onClick={() => handleNavClick('#proyectos')}
+          >
             Ver Proyectos
           </Button>
         </motion.div>
@@ -165,7 +182,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.8 }}
-          className="absolute bottom-32 left-0 right-0 flex justify-center gap-8 md:gap-16"
+          className="relative md:absolute md:bottom-32 md:left-0 md:right-0 flex justify-center gap-4 sm:gap-8 md:gap-16 mt-8 md:mt-0"
         >
           {[
             { number: '15+', label: 'Años de Experiencia' },
@@ -173,10 +190,10 @@ export default function HeroSection() {
             { number: '50+', label: 'Clientes Satisfechos' },
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-graphite mb-1 drop-shadow-lg light:drop-shadow-none">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white dark:text-white light:text-graphite mb-1 drop-shadow-lg light:drop-shadow-none">
                 {stat.number}
               </div>
-              <div className="text-xs md:text-sm text-metal-gray dark:text-metal-gray light:text-gray-600 uppercase tracking-wider">
+              <div className="text-[10px] sm:text-xs md:text-sm text-metal-gray dark:text-metal-gray light:text-gray-600 uppercase tracking-wider max-w-[80px] sm:max-w-none">
                 {stat.label}
               </div>
             </div>
