@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { Menu, X, Phone, Mail, Sun, Moon } from 'lucide-react'
+import { Menu, X, Phone, Mail, Sun, Moon, Linkedin, Facebook, Instagram } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { companyInfo } from '@/lib/data'
 import { useTheme } from '@/components/providers/ThemeProvider'
@@ -16,6 +16,12 @@ const navItems = [
   { label: 'Clientes', href: '#clientes' },
   { label: 'Contacto', href: '#contacto' },
 ]
+
+const socialIcons: Record<string, React.ElementType> = {
+  linkedin: Linkedin,
+  facebook: Facebook,
+  instagram: Instagram,
+}
 
 const menuVariants = {
   closed: {
@@ -109,17 +115,21 @@ export default function Header() {
               </a>
             </div>
             <div className="flex items-center gap-4">
-              {Object.entries(companyInfo.socialMedia).map(([platform, url]) => (
-                <a
-                  key={platform}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-metal-gray hover:text-industrial-blue transition-colors capitalize"
-                >
-                  {platform}
-                </a>
-              ))}
+              {Object.entries(companyInfo.socialMedia).map(([platform, url]) => {
+                const Icon = socialIcons[platform]
+                return (
+                  <a
+                    key={platform}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-gray-500 dark:text-metal-gray hover:text-industrial-blue transition-colors text-sm font-medium"
+                  >
+                    {Icon && <Icon className="w-4 h-4" />}
+                    <span className="capitalize">{platform}</span>
+                  </a>
+                )
+              })}
             </div>
           </div>
         </div>

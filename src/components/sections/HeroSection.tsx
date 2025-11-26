@@ -117,18 +117,18 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-6"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-safety-yellow dark:text-safety-yellow light:text-industrial-blue bg-graphite-light/50 dark:bg-graphite-light/50 light:bg-industrial-blue/10 rounded-full border border-safety-yellow/30 dark:border-safety-yellow/30 light:border-industrial-blue/30 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-safety-yellow dark:bg-safety-yellow light:bg-industrial-blue animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-safety-yellow dark:text-safety-yellow light:text-white bg-graphite-light/50 dark:bg-graphite-light/50 light:bg-industrial-blue rounded-full border border-safety-yellow/30 dark:border-safety-yellow/30 light:border-industrial-blue backdrop-blur-sm shadow-lg light:shadow-industrial-blue/30">
+            <span className="w-2 h-2 rounded-full bg-safety-yellow dark:bg-safety-yellow light:bg-white animate-pulse" />
             Ingeniería Industrial de Excelencia
           </span>
         </motion.div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white dark:text-white light:text-graphite mb-6 tracking-tight">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white dark:text-white light:text-gray-300 mb-6 tracking-tight drop-shadow-lg light:drop-shadow-none">
           <AnimatedText text="SOLUCIONES" className="block" />
           <span className="block mt-2 md:mt-4">
             <AnimatedText 
               text="INTEGRALES JS" 
-              className="text-industrial-blue"
+              className="text-industrial-blue light:text-industrial-blue-dark"
             />
           </span>
         </h1>
@@ -137,12 +137,12 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="max-w-2xl text-lg md:text-xl text-metal-gray dark:text-metal-gray light:text-gray-700 mb-12 leading-relaxed"
+          className="max-w-2xl text-lg md:text-xl text-metal-gray dark:text-metal-gray light:text-gray-300 mb-12 leading-relaxed"
         >
           Transformamos visiones en estructuras reales. Especialistas en 
-          <span className="text-white dark:text-white light:text-industrial-blue font-semibold"> ingeniería estructural</span>,
-          <span className="text-white dark:text-white light:text-industrial-blue font-semibold"> piping industrial</span> y
-          <span className="text-white dark:text-white light:text-industrial-blue font-semibold"> montaje de equipos</span>.
+          <span className="text-white dark:text-white light:text-gray-200 font-semibold"> ingeniería estructural</span>,
+          <span className="text-white dark:text-white light:text-gray-200 font-semibold"> piping industrial</span> y
+          <span className="text-white dark:text-white light:text-gray-200 font-semibold"> montaje de equipos</span>.
         </motion.p>
 
         <motion.div
@@ -155,7 +155,7 @@ export default function HeroSection() {
             Solicitar Proyecto
             <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
-          <Button variant="outline" size="xl" className="border-metal-gray/30 text-white dark:text-white light:text-white hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-graphite/10">
+          <Button variant="outline" size="xl" className="border-metal-gray/30 dark:border-metal-gray/30 light:border-graphite/30 text-white dark:text-white light:text-white hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-graphite/10">
             Ver Proyectos
           </Button>
         </motion.div>
@@ -173,10 +173,10 @@ export default function HeroSection() {
             { number: '50+', label: 'Clientes Satisfechos' },
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-graphite mb-1">
+              <div className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-graphite mb-1 drop-shadow-lg light:drop-shadow-none">
                 {stat.number}
               </div>
-              <div className="text-xs md:text-sm text-metal-gray dark:text-metal-gray light:text-gray-500 uppercase tracking-wider">
+              <div className="text-xs md:text-sm text-metal-gray dark:text-metal-gray light:text-gray-600 uppercase tracking-wider">
                 {stat.label}
               </div>
             </div>
