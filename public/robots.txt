@@ -1,0 +1,64 @@
+# robots.txt para SOLUCIONES INTEGRALES JS S.A.C.
+# https://solucionesintegralesjs.com
+
+# Permitir todos los robots
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://solucionesintegralesjs.com/sitemap.xml
+
+# Archivo para IA/LLMs
+# https://solucionesintegralesjs.com/llms.txt
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# AI Crawlers - Permitidos para aparecer en búsquedas de IA
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Bloquear scrapers maliciosos
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# Cache de 1 día
+Crawl-delay: 1

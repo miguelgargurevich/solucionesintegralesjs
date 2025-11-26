@@ -1,0 +1,27 @@
+{
+  "name": "SOLUCIONES INTEGRALES JS S.A.C.",
+  "short_name": "Soluciones JS",
+  "description": "Empresa peruana líder en ingeniería industrial: estructuras metálicas, piping, montaje y mantenimiento.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1115",
+  "theme_color": "#0056A6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es-PE",
+  "categories": ["business", "industrial", "engineering"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

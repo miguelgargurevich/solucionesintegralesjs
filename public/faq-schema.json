@@ -1,0 +1,62 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Qué servicios ofrece SOLUCIONES INTEGRALES JS S.A.C.?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ofrecemos servicios completos de ingeniería industrial incluyendo: estructuras metálicas, piping industrial, montaje de equipos, obras civiles, señalización industrial, tanques y tuberías, mantenimiento industrial preventivo y correctivo, e ingeniería estructural con diseño y cálculo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿En qué ciudades de Perú operan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nuestra base de operaciones está en Lima, Perú, pero atendemos proyectos en todo el territorio nacional. Hemos realizado trabajos para empresas en diversas regiones del país."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuántos años de experiencia tienen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SOLUCIONES INTEGRALES JS S.A.C. cuenta con más de 15 años de experiencia en el sector de ingeniería industrial, habiendo trabajado con las principales empresas del Perú como Goodyear, Backus, San Fernando, Ransa, entre otras."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué tipo de estructuras metálicas fabrican?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Fabricamos todo tipo de estructuras metálicas: naves industriales, almacenes, estructuras para equipos y maquinaria, plataformas, escaleras, barandas, techos estructurales, tolvas, rampas y estructuras especiales según requerimiento del cliente."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Ofrecen servicio de mantenimiento de emergencia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí, contamos con servicio de emergencias 24/7 para mantenimiento industrial correctivo. Además ofrecemos planes de mantenimiento preventivo y atención durante paradas de planta programadas."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Trabajan con tuberías de vapor y alta presión?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí, somos especialistas en piping industrial incluyendo sistemas de vapor, condensado, gases, refrigeración y productos químicos. Realizamos diseño, fabricación, montaje y pruebas hidrostáticas de tuberías."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo puedo solicitar una cotización?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Puede contactarnos a través de nuestro formulario web en solucionesintegralesjs.com, por teléfono al +51 999 999 999, o por email a contacto@solucionesintegralesjs.com. Realizamos visitas técnicas sin costo para evaluar su proyecto."
+      }
+    }
+  ]
+}
