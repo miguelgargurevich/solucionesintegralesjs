@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 6%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 209 100% 33%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 6% 85%;
+    --secondary-foreground: 0 0% 6%;
+    --muted: 220 6% 15%;
+    --muted-foreground: 220 6% 65%;
+    --accent: 45 100% 50%;
+    --accent-foreground: 0 0% 6%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 6% 20%;
+    --input: 220 6% 20%;
+    --ring: 209 100% 33%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-graphite-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-industrial-blue/50 rounded-full;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-industrial-blue;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-industrial-blue/30 text-white;
+  }
+}
+
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-graphite-light/50 backdrop-blur-xl border border-metal-gray/10 rounded-2xl;
+  }
+
+  /* Industrial gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-industrial-blue via-industrial-blue-light to-safety-yellow bg-clip-text text-transparent;
+  }
+
+  /* Metallic shine animation */
+  .metallic-shine {
+    @apply relative overflow-hidden;
+  }
+
+  .metallic-shine::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Glow effects */
+  .glow-blue {
+    @apply shadow-[0_0_40px_rgba(0,86,166,0.4)];
+  }
+
+  .glow-yellow {
+    @apply shadow-[0_0_40px_rgba(255,195,0,0.4)];
+  }
+
+  /* Industrial button */
+  .btn-industrial {
+    @apply relative inline-flex items-center justify-center px-8 py-4 font-medium text-white rounded-lg overflow-hidden transition-all duration-300;
+    @apply bg-gradient-to-r from-industrial-blue to-industrial-blue-dark;
+    @apply hover:shadow-glow-blue hover:scale-105;
+  }
+
+  .btn-industrial::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full;
+    @apply group-hover:translate-x-full transition-transform duration-700;
+  }
+
+  /* Blueprint grid background */
+  .blueprint-grid {
+    background-image: 
+      linear-gradient(rgba(0, 86, 166, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 86, 166, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Perspective container for 3D effects */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .perspective-2000 {
+    perspective: 2000px;
+  }
+
+  /* 3D transform utilities */
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+@layer utilities {
+  /* Text balance for better typography */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbar */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Noise texture */
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    @apply opacity-[0.03] pointer-events-none;
+  }
+
+  /* Animation delay utilities */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  /* Gradient mask for fade effects */
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  .mask-fade-y {
+    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+  }
+}
+
+/* Custom animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(100%) skewX(-12deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 86, 166, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 86, 166, 0.6);
+  }
+}
+
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Framer Motion overrides */
+.motion-reduce * {
+  animation: none !important;
+  transition: none !important;
+}

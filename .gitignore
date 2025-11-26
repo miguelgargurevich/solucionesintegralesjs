@@ -1,0 +1,109 @@
+# ================================
+# Dependencies
+# ================================
+node_modules/
+.pnp/
+.pnp.js
+.yarn/
+
+# ================================
+# Next.js Build & Cache
+# ================================
+.next/
+out/
+build/
+dist/
+
+# ================================
+# Cache directories
+# ================================
+.cache/
+*.cache
+.turbo/
+.swc/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# ================================
+# Environment variables (IMPORTANT!)
+# ================================
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ================================
+# IDE & Editors
+# ================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# ================================
+# OS generated files
+# ================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ================================
+# Logs
+# ================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ================================
+# Testing & Coverage
+# ================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ================================
+# Production / Deployment
+# ================================
+.vercel/
+.netlify/
+
+# ================================
+# Misc
+# ================================
+*.pem
+*.key
+*.cert
+*.local
+
+# ================================
+# TypeScript
+# ================================
+*.tsbuildinfo
+next-env.d.ts
+
+# ================================
+# Storybook
+# ================================
+storybook-static/
+
+# ================================
+# PWA files
+# ================================
+public/sw.js
+public/workbox-*.js
