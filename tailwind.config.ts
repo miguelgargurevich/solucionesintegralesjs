@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
   darkMode: ["class"],
@@ -147,6 +148,12 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // Add 'light' variant that applies when .light class is on html
+    plugin(function({ addVariant }) {
+      addVariant('light', '.light &')
+    }),
+  ],
 }
 export default config

@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ArrowRight } from 'lucide-react'
@@ -10,7 +10,7 @@ import { ChevronDown, ArrowRight } from 'lucide-react'
 const Scene3D = dynamic(() => import('@/components/3d/IndustrialScene'), {
   ssr: false,
   loading: () => (
-    <div className="absolute inset-0 bg-graphite flex items-center justify-center">
+    <div className="absolute inset-0 bg-graphite dark:bg-graphite flex items-center justify-center">
       <div className="animate-pulse text-industrial-blue text-lg font-medium">
         Cargando...
       </div>
@@ -65,6 +65,9 @@ const AnimatedText = ({ text, className }: { text: string; className?: string })
   )
 }
 
+// Spring config for smooth animations
+const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
+
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -72,26 +75,29 @@ export default function HeroSection() {
     offset: ['start start', 'end start'],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
+  // Use springs for smoother animations
+  const smoothProgress = useSpring(scrollYProgress, springConfig)
+  
+  const y = useTransform(smoothProgress, [0, 1], ['0%', '30%'])
+  const opacity = useTransform(smoothProgress, [0, 0.5], [1, 0])
+  const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.95])
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen overflow-hidden bg-graphite"
+      className="relative min-h-screen overflow-hidden bg-graphite dark:bg-graphite light:bg-gradient-to-b light:from-white light:to-gray-100"
       id="inicio"
     >
       {/* Escena 3D de fondo */}
       <motion.div
-        style={{ y, scale }}
+        style={{ y, scale, willChange: 'transform' }}
         className="absolute inset-0 z-0"
       >
         <Scene3D />
       </motion.div>
 
       {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-graphite/40 via-transparent to-graphite z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-graphite/40 via-transparent to-graphite dark:from-graphite/40 dark:to-graphite light:from-white/80 light:via-transparent light:to-white z-10" />
       
       {/* Noise texture overlay */}
       <div className="absolute inset-0 opacity-[0.03] z-10 pointer-events-none"
@@ -102,7 +108,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <motion.div
-        style={{ opacity }}
+        style={{ opacity, willChange: 'opacity' }}
         className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 text-center"
       >
         <motion.div
@@ -111,17 +117,17 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-6"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-safety-yellow bg-graphite-light/50 rounded-full border border-safety-yellow/30 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-safety-yellow animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-safety-yellow dark:text-safety-yellow light:text-industrial-blue bg-graphite-light/50 dark:bg-graphite-light/50 light:bg-industrial-blue/10 rounded-full border border-safety-yellow/30 dark:border-safety-yellow/30 light:border-industrial-blue/30 backdrop-blur-sm">
+            <span className="w-2 h-2 rounded-full bg-safety-yellow dark:bg-safety-yellow light:bg-industrial-blue animate-pulse" />
             Ingeniería Industrial de Excelencia
           </span>
         </motion.div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white mb-6 tracking-tight">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white dark:text-white light:text-graphite mb-6 tracking-tight">
           <AnimatedText text="SOLUCIONES" className="block" />
           <span className="block mt-2 md:mt-4">
             <AnimatedText 
-              text="INTEGRALES" 
+              text="INTEGRALES JS" 
               className="text-industrial-blue"
             />
           </span>
@@ -131,12 +137,12 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="max-w-2xl text-lg md:text-xl text-metal-gray mb-12 leading-relaxed"
+          className="max-w-2xl text-lg md:text-xl text-metal-gray dark:text-metal-gray light:text-gray-700 mb-12 leading-relaxed"
         >
           Transformamos visiones en estructuras reales. Especialistas en 
-          <span className="text-white font-medium"> ingeniería estructural</span>,
-          <span className="text-white font-medium"> piping industrial</span> y
-          <span className="text-white font-medium"> montaje de equipos</span>.
+          <span className="text-white dark:text-white light:text-industrial-blue font-semibold"> ingeniería estructural</span>,
+          <span className="text-white dark:text-white light:text-industrial-blue font-semibold"> piping industrial</span> y
+          <span className="text-white dark:text-white light:text-industrial-blue font-semibold"> montaje de equipos</span>.
         </motion.p>
 
         <motion.div
@@ -149,7 +155,7 @@ export default function HeroSection() {
             Solicitar Proyecto
             <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
-          <Button variant="outline" size="xl" className="border-metal-gray/30 text-white hover:bg-white/10">
+          <Button variant="outline" size="xl" className="border-metal-gray/30 text-white dark:text-white light:text-white hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-graphite/10">
             Ver Proyectos
           </Button>
         </motion.div>
@@ -167,10 +173,10 @@ export default function HeroSection() {
             { number: '50+', label: 'Clientes Satisfechos' },
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white mb-1">
+              <div className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-graphite mb-1">
                 {stat.number}
               </div>
-              <div className="text-xs md:text-sm text-metal-gray uppercase tracking-wider">
+              <div className="text-xs md:text-sm text-metal-gray dark:text-metal-gray light:text-gray-500 uppercase tracking-wider">
                 {stat.label}
               </div>
             </div>
@@ -187,7 +193,7 @@ export default function HeroSection() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="flex flex-col items-center gap-2 text-metal-gray cursor-pointer hover:text-white transition-colors"
+            className="flex flex-col items-center gap-2 text-metal-gray dark:text-metal-gray light:text-gray-500 cursor-pointer hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors"
           >
             <span className="text-xs uppercase tracking-widest">Explorar</span>
             <ChevronDown className="w-6 h-6" />

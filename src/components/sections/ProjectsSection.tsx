@@ -89,7 +89,7 @@ function ProjectCard({
       className={`group relative cursor-pointer ${getCardSize()} ${project.featured ? 'md:col-span-2 md:row-span-2' : ''}`}
       onClick={() => onSelect(project)}
     >
-      <div className="relative h-full min-h-[280px] md:min-h-[320px] rounded-2xl overflow-hidden bg-graphite-light border border-metal-gray/10 transform-gpu transition-all duration-500 hover:border-industrial-blue/40">
+      <div className="relative h-full min-h-[280px] md:min-h-[320px] rounded-2xl overflow-hidden bg-graphite-light dark:bg-graphite-light light:bg-gray-100 border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 transform-gpu transition-all duration-500 hover:border-industrial-blue/40">
         {/* Imagen con efecto grayscale -> color */}
         <div className="absolute inset-0">
           <Image
@@ -282,7 +282,7 @@ export default function ProjectsSection() {
   }
 
   return (
-    <section ref={sectionRef} id="proyectos" className="relative py-24 md:py-32 bg-graphite overflow-hidden">
+    <section ref={sectionRef} id="proyectos" className="relative py-24 md:py-32 bg-graphite dark:bg-graphite light:bg-white overflow-hidden">
       {/* Parallax background elements */}
       <motion.div
         style={{ y: parallaxY }}
@@ -326,7 +326,7 @@ export default function ProjectsSection() {
             </span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white dark:text-white light:text-graphite mb-6">
             Proyectos{' '}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-industrial-blue via-industrial-blue-light to-safety-yellow bg-clip-text text-transparent">
@@ -348,7 +348,7 @@ export default function ProjectsSection() {
               </svg>
             </span>
           </h2>
-          <p className="max-w-2xl mx-auto text-metal-gray text-lg">
+          <p className="max-w-2xl mx-auto text-metal-gray dark:text-metal-gray light:text-gray-600 text-lg">
             Más de 200 proyectos completados para empresas líderes de la industria peruana. 
             Cada proyecto refleja nuestro compromiso con la excelencia.
           </p>
@@ -383,7 +383,7 @@ export default function ProjectsSection() {
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(0, 86, 166, 0.4)' }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white rounded-lg font-medium border-2 border-industrial-blue/50 hover:bg-industrial-blue/10 transition-colors"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white dark:text-white light:text-graphite rounded-lg font-medium border-2 border-industrial-blue/50 hover:bg-industrial-blue/10 transition-colors"
           >
             <span>Ver Todos los Proyectos</span>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

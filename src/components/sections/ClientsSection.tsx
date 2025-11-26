@@ -36,8 +36,8 @@ function ClientLogo({ client, index }: { client: typeof clients[0], index: numbe
 
       {/* Logo placeholder con nombre */}
       <div className="relative flex flex-col items-center gap-2">
-        <div className="w-24 h-16 flex items-center justify-center bg-metal-gray/5 rounded-lg border border-metal-gray/10 group-hover:border-industrial-blue/30 transition-colors duration-300">
-          <span className="text-metal-gray-dark group-hover:text-white text-lg font-bold transition-colors duration-300 text-center px-2 filter grayscale group-hover:grayscale-0">
+        <div className="w-24 h-16 flex items-center justify-center bg-metal-gray/5 dark:bg-metal-gray/5 light:bg-gray-100 rounded-lg border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 group-hover:border-industrial-blue/30 transition-colors duration-300">
+          <span className="text-metal-gray-dark dark:text-metal-gray-dark light:text-gray-500 group-hover:text-white dark:group-hover:text-white light:group-hover:text-industrial-blue text-lg font-bold transition-colors duration-300 text-center px-2 filter grayscale group-hover:grayscale-0">
             {client.name}
           </span>
         </div>
@@ -85,7 +85,7 @@ export default function ClientsSection() {
   const parallaxY = useTransform(scrollYProgress, [0, 1], [50, -50])
 
   return (
-    <section ref={sectionRef} id="clientes" className="relative py-24 md:py-32 bg-graphite-dark overflow-hidden">
+    <section ref={sectionRef} id="clientes" className="relative py-24 md:py-32 bg-graphite-dark dark:bg-graphite-dark light:bg-gray-50 overflow-hidden">
       {/* Background decorations */}
       <motion.div
         style={{ y: parallaxY }}
@@ -128,14 +128,14 @@ export default function ClientsSection() {
             </span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white dark:text-white light:text-graphite mb-6">
             Empresas que{' '}
             <span className="bg-gradient-to-r from-industrial-blue via-industrial-blue-light to-safety-yellow bg-clip-text text-transparent">
               Confían
             </span>
             {' '}en Nosotros
           </h2>
-          <p className="max-w-2xl mx-auto text-metal-gray text-lg">
+          <p className="max-w-2xl mx-auto text-metal-gray dark:text-metal-gray light:text-gray-600 text-lg">
             Trabajamos con las empresas líderes de la industria peruana, 
             brindando soluciones de ingeniería de primer nivel.
           </p>
@@ -144,8 +144,8 @@ export default function ClientsSection() {
         {/* Marquee container */}
         <div className="relative">
           {/* Gradient overlays for fade effect */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-graphite-dark to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-graphite-dark to-transparent z-10" />
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-graphite-dark dark:from-graphite-dark light:from-gray-50 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-graphite-dark dark:from-graphite-dark light:from-gray-50 to-transparent z-10" />
           
           {/* First marquee row */}
           <div className="mb-8">
@@ -164,12 +164,12 @@ export default function ClientsSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="mt-20 pt-12 border-t border-metal-gray/10"
+          className="mt-20 pt-12 border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { value: '50+', label: 'Clientes Activos' },
-              { value: '98%', label: 'Satisfacción' },
+              { value: '100%', label: 'Satisfacción' },
               { value: '15+', label: 'Sectores Industriales' },
               { value: '100%', label: 'Proyectos Entregados' },
             ].map((stat, index) => (
@@ -181,10 +181,10 @@ export default function ClientsSection() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2 font-display">
+                <div className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-graphite mb-2 font-display">
                   {stat.value}
                 </div>
-                <div className="text-metal-gray text-sm uppercase tracking-wider">
+                <div className="text-metal-gray dark:text-metal-gray light:text-gray-500 text-sm uppercase tracking-wider">
                   {stat.label}
                 </div>
               </motion.div>

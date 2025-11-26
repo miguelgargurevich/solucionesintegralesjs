@@ -86,7 +86,7 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contacto" className="relative py-24 md:py-32 bg-graphite overflow-hidden">
+    <section id="contacto" className="relative py-24 md:py-32 bg-graphite dark:bg-graphite light:bg-white overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-industrial-blue/5 rounded-full blur-3xl" />
@@ -126,13 +126,13 @@ export default function ContactSection() {
             </span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white dark:text-white light:text-graphite mb-6">
             Iniciemos su{' '}
             <span className="bg-gradient-to-r from-industrial-blue via-industrial-blue-light to-safety-yellow bg-clip-text text-transparent">
               Próximo Proyecto
             </span>
           </h2>
-          <p className="max-w-2xl mx-auto text-metal-gray text-lg">
+          <p className="max-w-2xl mx-auto text-metal-gray dark:text-metal-gray light:text-gray-600 text-lg">
             Estamos listos para ayudarle. Contáctenos para una consulta gratuita 
             y descubra cómo podemos transformar su visión en realidad.
           </p>
@@ -148,7 +148,7 @@ export default function ContactSection() {
           >
             <motion.div
               variants={itemVariants}
-              className="relative bg-graphite-light/50 backdrop-blur-xl rounded-2xl p-8 md:p-10 border border-metal-gray/10"
+              className="relative bg-graphite-light/50 dark:bg-graphite-light/50 light:bg-gray-50/80 backdrop-blur-xl rounded-2xl p-8 md:p-10 border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200"
             >
               {/* Decorative corner */}
               <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-industrial-blue/30 rounded-tl-2xl" />
@@ -172,8 +172,8 @@ export default function ContactSection() {
                     >
                       <CheckCircle className="w-10 h-10 text-green-500" />
                     </motion.div>
-                    <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
-                    <p className="text-metal-gray">Nos pondremos en contacto con usted pronto.</p>
+                    <h3 className="text-2xl font-bold text-white dark:text-white light:text-graphite mb-2">¡Mensaje Enviado!</h3>
+                    <p className="text-metal-gray dark:text-metal-gray light:text-gray-600">Nos pondremos en contacto con usted pronto.</p>
                   </motion.div>
                 ) : (
                   <motion.form
@@ -188,7 +188,7 @@ export default function ContactSection() {
                   >
                     <div className="grid md:grid-cols-2 gap-6">
                       <motion.div variants={itemVariants} className="space-y-2">
-                        <Label htmlFor="name" className="text-white">Nombre completo</Label>
+                        <Label htmlFor="name" className="text-white dark:text-white light:text-graphite">Nombre completo</Label>
                         <Input
                           id="name"
                           name="name"
@@ -197,7 +197,7 @@ export default function ContactSection() {
                         />
                       </motion.div>
                       <motion.div variants={itemVariants} className="space-y-2">
-                        <Label htmlFor="email" className="text-white">Correo electrónico</Label>
+                        <Label htmlFor="email" className="text-white dark:text-white light:text-graphite">Correo electrónico</Label>
                         <Input
                           id="email"
                           name="email"
@@ -210,7 +210,7 @@ export default function ContactSection() {
 
                     <div className="grid md:grid-cols-2 gap-6">
                       <motion.div variants={itemVariants} className="space-y-2">
-                        <Label htmlFor="phone" className="text-white">Teléfono</Label>
+                        <Label htmlFor="phone" className="text-white dark:text-white light:text-graphite">Teléfono</Label>
                         <Input
                           id="phone"
                           name="phone"
@@ -219,7 +219,7 @@ export default function ContactSection() {
                         />
                       </motion.div>
                       <motion.div variants={itemVariants} className="space-y-2">
-                        <Label htmlFor="company" className="text-white">Empresa</Label>
+                        <Label htmlFor="company" className="text-white dark:text-white light:text-graphite">Empresa</Label>
                         <Input
                           id="company"
                           name="company"
@@ -229,16 +229,16 @@ export default function ContactSection() {
                     </div>
 
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <Label htmlFor="service" className="text-white">Servicio de interés</Label>
+                      <Label htmlFor="service" className="text-white dark:text-white light:text-graphite">Servicio de interés</Label>
                       <select
                         id="service"
                         name="service"
-                        className="flex h-12 w-full rounded-lg border-2 border-metal-gray/30 bg-graphite-light/50 px-4 py-2 text-sm text-white ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-industrial-blue focus-visible:ring-offset-2 focus-visible:border-industrial-blue transition-all duration-300 backdrop-blur-sm appearance-none cursor-pointer"
+                        className="flex h-12 w-full rounded-lg border-2 border-metal-gray/30 dark:border-metal-gray/30 light:border-gray-300 bg-graphite-light/50 dark:bg-graphite-light/50 light:bg-white px-4 py-2 text-sm text-white dark:text-white light:text-graphite ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-industrial-blue focus-visible:ring-offset-2 focus-visible:border-industrial-blue transition-all duration-300 backdrop-blur-sm appearance-none cursor-pointer"
                         required
                       >
-                        <option value="" className="bg-graphite">Seleccione un servicio</option>
+                        <option value="" className="bg-graphite dark:bg-graphite light:bg-white">Seleccione un servicio</option>
                         {services.map(service => (
-                          <option key={service.id} value={service.id} className="bg-graphite">
+                          <option key={service.id} value={service.id} className="bg-graphite dark:bg-graphite light:bg-white">
                             {service.title}
                           </option>
                         ))}
@@ -246,7 +246,7 @@ export default function ContactSection() {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <Label htmlFor="message" className="text-white">Mensaje</Label>
+                      <Label htmlFor="message" className="text-white dark:text-white light:text-graphite">Mensaje</Label>
                       <Textarea
                         id="message"
                         name="message"
@@ -313,100 +313,66 @@ export default function ContactSection() {
                   key={index}
                   variants={itemVariants}
                   whileHover={{ x: 10, transition: { type: 'spring', stiffness: 300 } }}
-                  className="group flex items-center gap-4 p-4 bg-graphite-light/30 backdrop-blur-sm rounded-xl border border-metal-gray/10 hover:border-industrial-blue/30 transition-colors"
+                  className="group flex items-center gap-4 p-4 bg-graphite-light/30 dark:bg-graphite-light/30 light:bg-gray-50/80 backdrop-blur-sm rounded-xl border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 hover:border-industrial-blue/30 transition-colors"
                 >
                   <div className={`w-12 h-12 rounded-lg bg-${item.color}/10 flex items-center justify-center group-hover:bg-${item.color}/20 transition-colors`}>
                     <item.icon className={`w-5 h-5 text-${item.color}`} />
                   </div>
                   <div>
-                    <div className="text-metal-gray text-sm">{item.label}</div>
-                    <div className="text-white font-medium">{item.value}</div>
+                    <div className="text-metal-gray dark:text-metal-gray light:text-gray-500 text-sm">{item.label}</div>
+                    <div className="text-white dark:text-white light:text-graphite font-medium">{item.value}</div>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
 
-            {/* Stylized Map */}
+            {/* Google Maps Embed */}
             <motion.div
               variants={itemVariants}
-              className="relative h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-metal-gray/10"
+              className="relative h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200"
             >
-              {/* Map placeholder with industrial styling */}
-              <div className="absolute inset-0 bg-graphite-light">
-                {/* Industrial styled map background */}
-                <div className="absolute inset-0 opacity-30">
-                  <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <pattern id="map-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0056A6" strokeWidth="0.5" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#map-grid)" />
-                  </svg>
-                </div>
-
-                {/* Fake map elements */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    {/* Animated rings */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <motion.div
-                        animate={{ scale: [1, 2], opacity: [0.5, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="w-20 h-20 rounded-full border-2 border-industrial-blue"
-                      />
-                    </div>
-                    <motion.div
-                      animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
-                      <div className="w-32 h-32 rounded-full border border-industrial-blue/50" />
-                    </motion.div>
-                    
-                    {/* Pin marker */}
-                    <motion.div
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="relative z-10"
-                    >
-                      <div className="w-12 h-12 rounded-full bg-industrial-blue flex items-center justify-center shadow-glow-blue">
-                        <MapPin className="w-6 h-6 text-white" />
-                      </div>
-                    </motion.div>
-                  </div>
-                </div>
-
-                {/* Location label */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-graphite/90 backdrop-blur-md rounded-lg p-4 border border-industrial-blue/20">
-                    <div className="text-white font-bold mb-1">{companyInfo.name}</div>
-                    <div className="text-metal-gray text-sm">{companyInfo.address}</div>
-                  </div>
+              {/* Google Maps iframe */}
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.5!2d-76.9908!3d-12.1328!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDA3JzU4LjEiUyA3NsKwNTknMjYuOSJX!5e0!3m2!1ses!2spe!4v1700000000000!5m2!1ses!2spe&q=Av.+Las+Gaviotas+2121,+Santiago+de+Surco,+Lima,+Peru"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ubicación de SOLUCIONES INTEGRALES JS S.A.C."
+                className="absolute inset-0"
+              />
+              
+              {/* Overlay gradient for better integration */}
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-graphite/20 dark:from-graphite/30 light:from-white/10 to-transparent" />
+              
+              {/* Location label overlay */}
+              <div className="absolute bottom-4 left-4 right-4 pointer-events-none">
+                <div className="bg-graphite/90 dark:bg-graphite/90 light:bg-white/95 backdrop-blur-md rounded-lg p-4 border border-industrial-blue/20 shadow-lg">
+                  <div className="text-white dark:text-white light:text-graphite font-bold mb-1">{companyInfo.name}</div>
+                  <div className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm">{companyInfo.address}</div>
                 </div>
               </div>
-
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-graphite/50 to-transparent pointer-events-none" />
             </motion.div>
 
             {/* Working hours */}
             <motion.div
               variants={itemVariants}
-              className="p-6 bg-graphite-light/30 backdrop-blur-sm rounded-xl border border-metal-gray/10"
+              className="p-6 bg-graphite-light/30 dark:bg-graphite-light/30 light:bg-gray-50/80 backdrop-blur-sm rounded-xl border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200"
             >
-              <h4 className="text-white font-bold mb-4">Horario de Atención</h4>
+              <h4 className="text-white dark:text-white light:text-graphite font-bold mb-4">Horario de Atención</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <div className="text-metal-gray">Lunes - Viernes</div>
-                  <div className="text-white font-medium">8:00 AM - 6:00 PM</div>
+                  <div className="text-metal-gray dark:text-metal-gray light:text-gray-500">Lunes - Viernes</div>
+                  <div className="text-white dark:text-white light:text-graphite font-medium">8:00 AM - 6:00 PM</div>
                 </div>
                 <div>
-                  <div className="text-metal-gray">Sábados</div>
-                  <div className="text-white font-medium">9:00 AM - 1:00 PM</div>
+                  <div className="text-metal-gray dark:text-metal-gray light:text-gray-500">Sábados</div>
+                  <div className="text-white dark:text-white light:text-graphite font-medium">9:00 AM - 1:00 PM</div>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-metal-gray/10">
+              <div className="mt-4 pt-4 border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200">
                 <div className="flex items-center gap-2 text-safety-yellow">
                   <span className="w-2 h-2 rounded-full bg-safety-yellow animate-pulse" />
                   <span className="text-sm font-medium">Emergencias 24/7</span>

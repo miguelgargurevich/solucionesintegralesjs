@@ -63,7 +63,7 @@ function ServiceCard({ service, index }: { service: typeof services[0], index: n
       }}
       className="group perspective-1000"
     >
-      <div className="relative h-full bg-gradient-to-br from-graphite-light/80 to-graphite/90 rounded-2xl p-6 md:p-8 border border-metal-gray/10 backdrop-blur-xl overflow-hidden transform-gpu transition-all duration-500 hover:border-industrial-blue/30 hover:shadow-glow-blue">
+      <div className="relative h-full bg-gradient-to-br from-graphite-light/80 to-graphite/90 dark:from-graphite-light/80 dark:to-graphite/90 light:from-white light:to-gray-50 rounded-2xl p-6 md:p-8 border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 backdrop-blur-xl overflow-hidden transform-gpu transition-all duration-500 hover:border-industrial-blue/30 hover:shadow-glow-blue">
         {/* Metallic shine effect */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 animate-shimmer" />
@@ -87,17 +87,17 @@ function ServiceCard({ service, index }: { service: typeof services[0], index: n
         </motion.div>
 
         {/* Content */}
-        <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-4 group-hover:text-industrial-blue-light transition-colors">
+        <h3 className="text-xl md:text-2xl font-display font-bold text-white dark:text-white light:text-graphite mb-4 group-hover:text-industrial-blue-light transition-colors">
           {service.title}
         </h3>
-        <p className="text-metal-gray text-sm md:text-base leading-relaxed mb-6">
+        <p className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm md:text-base leading-relaxed mb-6">
           {service.description}
         </p>
 
         {/* Features list */}
         <ul className="space-y-2">
           {service.features.map((feature, idx) => (
-            <li key={idx} className="flex items-center gap-2 text-sm text-metal-gray-dark">
+            <li key={idx} className="flex items-center gap-2 text-sm text-metal-gray-dark dark:text-metal-gray-dark light:text-gray-500">
               <span className="w-1.5 h-1.5 rounded-full bg-safety-yellow/70" />
               {feature}
             </li>
@@ -117,7 +117,7 @@ function ServiceCard({ service, index }: { service: typeof services[0], index: n
 
 export default function ServicesSection() {
   return (
-    <section id="servicios" className="relative py-24 md:py-32 bg-graphite-dark overflow-hidden">
+    <section id="servicios" className="relative py-24 md:py-32 bg-graphite-dark dark:bg-graphite-dark light:bg-gray-50 overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-0 w-96 h-96 bg-industrial-blue/3 rounded-full blur-3xl -translate-y-1/2" />
@@ -157,13 +157,13 @@ export default function ServicesSection() {
             </span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white dark:text-white light:text-graphite mb-6">
             Soluciones{' '}
             <span className="bg-gradient-to-r from-industrial-blue via-industrial-blue-light to-safety-yellow bg-clip-text text-transparent">
               Industriales
             </span>
           </h2>
-          <p className="max-w-2xl mx-auto text-metal-gray text-lg">
+          <p className="max-w-2xl mx-auto text-metal-gray dark:text-metal-gray light:text-gray-600 text-lg">
             Ofrecemos una amplia gama de servicios de ingeniería y construcción industrial, 
             adaptados a las necesidades específicas de cada proyecto.
           </p>
@@ -190,7 +190,7 @@ export default function ServicesSection() {
           transition={{ delay: 0.5 }}
           className="text-center mt-16"
         >
-          <p className="text-metal-gray mb-6">
+          <p className="text-metal-gray dark:text-metal-gray light:text-gray-600 mb-6">
             ¿Necesitas un servicio personalizado? Contáctanos para una consulta gratuita.
           </p>
           <motion.a

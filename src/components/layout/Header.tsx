@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { Menu, X, Phone, Mail } from 'lucide-react'
+import { Menu, X, Phone, Mail, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { companyInfo } from '@/lib/data'
+import { useTheme } from '@/components/providers/ThemeProvider'
 
 const navItems = [
   { label: 'Inicio', href: '#inicio' },
@@ -55,6 +56,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('inicio')
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,16 +94,16 @@ export default function Header() {
       <motion.div
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="hidden md:block bg-graphite-dark border-b border-metal-gray/10"
+        className="hidden md:block bg-graphite-dark dark:bg-graphite-dark light:bg-gray-100 border-b border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200"
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-2 text-sm">
-            <div className="flex items-center gap-6 text-metal-gray">
-              <a href={`tel:${companyInfo.phone}`} className="flex items-center gap-2 hover:text-white transition-colors">
+            <div className="flex items-center gap-6 text-metal-gray dark:text-metal-gray light:text-gray-600">
+              <a href={`tel:${companyInfo.phone}`} className="flex items-center gap-2 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors">
                 <Phone className="w-4 h-4" />
                 {companyInfo.phone}
               </a>
-              <a href={`mailto:${companyInfo.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
+              <a href={`mailto:${companyInfo.email}`} className="flex items-center gap-2 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors">
                 <Mail className="w-4 h-4" />
                 {companyInfo.email}
               </a>
@@ -130,7 +132,7 @@ export default function Header() {
         transition={{ delay: 0.1 }}
         className={`fixed top-0 md:top-10 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled 
-            ? 'bg-graphite/90 backdrop-blur-xl shadow-lg border-b border-metal-gray/10' 
+            ? 'bg-graphite/90 dark:bg-graphite/90 light:bg-white/90 backdrop-blur-xl shadow-lg border-b border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200' 
             : 'bg-transparent'
         }`}
       >
@@ -146,7 +148,7 @@ export default function Header() {
                 <span className="text-white font-bold text-lg">SI</span>
               </motion.div>
               <div className="hidden sm:block">
-                <div className="text-white font-display font-bold text-lg leading-tight">
+                <div className="text-white dark:text-white light:text-graphite font-display font-bold text-lg leading-tight">
                   SOLUCIONES
                 </div>
                 <div className="text-industrial-blue text-xs font-medium tracking-wider">
@@ -163,8 +165,8 @@ export default function Header() {
                   onClick={() => handleNavClick(item.href)}
                   className={`relative px-4 py-2 text-sm font-medium transition-colors ${
                     activeSection === item.href.replace('#', '')
-                      ? 'text-white'
-                      : 'text-metal-gray hover:text-white'
+                      ? 'text-white dark:text-white light:text-graphite'
+                      : 'text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite'
                   }`}
                 >
                   {item.label}
@@ -179,8 +181,23 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* CTA Button */}
-            <div className="hidden lg:block">
+            {/* CTA Button + Theme Toggle */}
+            <div className="hidden lg:flex items-center gap-3">
+              {/* Theme Toggle */}
+              <motion.button
+                onClick={toggleTheme}
+                className="w-10 h-10 rounded-lg bg-graphite-light dark:bg-graphite-light light:bg-gray-100 flex items-center justify-center text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors border border-metal-gray/20 dark:border-metal-gray/20 light:border-gray-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </motion.button>
+
               <Button
                 variant="premium"
                 size="default"
@@ -193,7 +210,7 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center text-white"
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-white dark:text-white light:text-graphite"
             >
               <AnimatePresence mode="wait">
                 {isMobileMenuOpen ? (
@@ -233,7 +250,7 @@ export default function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-graphite/80 backdrop-blur-sm z-40 lg:hidden"
+              className="fixed inset-0 bg-graphite/80 dark:bg-graphite/80 light:bg-black/50 backdrop-blur-sm z-40 lg:hidden"
             />
 
             {/* Menu Panel */}
@@ -242,14 +259,14 @@ export default function Header() {
               initial="closed"
               animate="open"
               exit="closed"
-              className="fixed top-0 right-0 bottom-0 w-80 max-w-[80vw] bg-graphite-light border-l border-metal-gray/10 z-50 lg:hidden"
+              className="fixed top-0 right-0 bottom-0 w-80 max-w-[80vw] bg-graphite-light dark:bg-graphite-light light:bg-white border-l border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 z-50 lg:hidden"
             >
               <div className="flex flex-col h-full p-6">
                 {/* Close button */}
                 <div className="flex justify-end mb-8">
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-10 h-10 flex items-center justify-center text-white"
+                    className="w-10 h-10 flex items-center justify-center text-white dark:text-white light:text-graphite"
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -265,8 +282,8 @@ export default function Header() {
                       onClick={() => handleNavClick(item.href)}
                       className={`w-full text-left px-4 py-3 rounded-lg text-lg font-medium transition-colors ${
                         activeSection === item.href.replace('#', '')
-                          ? 'bg-industrial-blue/20 text-white'
-                          : 'text-metal-gray hover:bg-metal-gray/10 hover:text-white'
+                          ? 'bg-industrial-blue/20 text-white dark:text-white light:text-graphite'
+                          : 'text-metal-gray dark:text-metal-gray light:text-gray-600 hover:bg-metal-gray/10 dark:hover:bg-metal-gray/10 light:hover:bg-gray-100 hover:text-white dark:hover:text-white light:hover:text-graphite'
                       }`}
                     >
                       {item.label}
@@ -275,21 +292,38 @@ export default function Header() {
                 </nav>
 
                 {/* Contact info */}
-                <div className="pt-6 border-t border-metal-gray/10 space-y-4">
+                <div className="pt-6 border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 space-y-4">
                   <a
                     href={`tel:${companyInfo.phone}`}
-                    className="flex items-center gap-3 text-metal-gray hover:text-white transition-colors"
+                    className="flex items-center gap-3 text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors"
                   >
                     <Phone className="w-5 h-5" />
                     {companyInfo.phone}
                   </a>
                   <a
                     href={`mailto:${companyInfo.email}`}
-                    className="flex items-center gap-3 text-metal-gray hover:text-white transition-colors"
+                    className="flex items-center gap-3 text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors"
                   >
                     <Mail className="w-5 h-5" />
                     {companyInfo.email}
                   </a>
+                </div>
+
+                {/* Theme Toggle - Mobile */}
+                <div className="mt-4 pt-4 border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200">
+                  <button
+                    onClick={toggleTheme}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-metal-gray dark:text-metal-gray light:text-gray-600 hover:bg-metal-gray/10 dark:hover:bg-metal-gray/10 light:hover:bg-gray-100 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors"
+                  >
+                    <span className="text-lg font-medium">
+                      {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+                    </span>
+                    {theme === 'dark' ? (
+                      <Sun className="w-5 h-5" />
+                    ) : (
+                      <Moon className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
 
                 {/* CTA */}

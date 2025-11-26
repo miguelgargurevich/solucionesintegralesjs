@@ -199,13 +199,18 @@ export const companyInfo = {
   name: 'SOLUCIONES INTEGRALES JS S.A.C.',
   tagline: 'Ingeniería Industrial de Excelencia',
   description: 'Empresa peruana especializada en servicios de ingeniería, proyectos civiles, estructuras metálicas, piping, montaje industrial y mantenimiento. Más de 15 años de experiencia brindando soluciones integrales a la industria.',
-  phone: '+51 999 999 999',
+  phone: '+51 953 951 268',
   email: 'contacto@solucionesintegralesjs.com',
-  address: 'Lima, Perú',
+  address: 'Av. Las Gaviotas 2121, Santiago de Surco, Lima, Perú',
   ruc: '20123456789',
   socialMedia: {
     linkedin: 'https://linkedin.com/company/soluciones-integrales-js',
     facebook: 'https://facebook.com/solucionesintegralesjs',
     instagram: 'https://instagram.com/solucionesintegralesjs',
+  },
+  // Coordenadas para el mapa (Santiago de Surco, Lima)
+  coordinates: {
+    lat: -12.1328,
+    lng: -76.9908,
   },
 }
