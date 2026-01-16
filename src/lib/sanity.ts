@@ -10,21 +10,28 @@ type SanityImageSource = {
   }
 }
 
-export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
+export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'dummy-project-id'
 export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 export const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01'
 
-export const client = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  useCdn: process.env.NODE_ENV === 'production',
-})
+// Solo crear el cliente si tenemos un projectId válido
+export const client = projectId !== 'dummy-project-id' 
+  ? createClient({
+      projectId,
+      dataset,
+      apiVersion,
+      useCdn: process.env.NODE_ENV === 'production',
+    })
+  : null
 
 // Generador de URLs para imágenes
-const builder = createImageUrlBuilder(client)
+const builder = client ? createImageUrlBuilder(client) : null
 
 export function urlFor(source: SanityImageSource) {
+  if (!builder) {
+    // Retornar una URL vacía si Sanity no está configurado
+    return { url: () => '' } as any
+  }
   return builder.image(source)
 }
 
@@ -110,21 +117,51 @@ export const categoriesQuery = `*[_type == "category"] | order(title asc) {
 // ============== FUNCIONES DE FETCH ==============
 
 export async function getProjects() {
-  return await client.fetch(projectsQuery)
+  if (!client) return []
+  try {
+    return await client.fetch(projectsQuery)
+  } catch (error) {
+    console.error('Error fetching projects from Sanity:', error)
+    return []
+  }
 }
 
 export async function getFeaturedProjects() {
-  return await client.fetch(featuredProjectsQuery)
+  if (!client) return []
+  try {
+    return await client.fetch(featuredProjectsQuery)
+  } catch (error) {
+    console.error('Error fetching featured projects from Sanity:', error)
+    return []
+  }
 }
 
 export async function getProjectBySlug(slug: string) {
-  return await client.fetch(projectBySlugQuery, { slug })
+  if (!client) return null
+  try {
+    return await client.fetch(projectBySlugQuery, { slug })
+  } catch (error) {
+    console.error('Error fetching project from Sanity:', error)
+    return null
+  }
 }
 
 export async function getProjectsByCategory(categorySlug: string) {
-  return await client.fetch(projectsByCategoryQuery, { categorySlug })
+  if (!client) return []
+  try {
+    return await client.fetch(projectsByCategoryQuery, { categorySlug })
+  } catch (error) {
+    console.error('Error fetching projects by category from Sanity:', error)
+    return []
+  }
 }
 
 export async function getCategories() {
-  return await client.fetch(categoriesQuery)
+  if (!client) return []
+  try {
+    return await client.fetch(categoriesQuery)
+  } catch (error) {
+    console.error('Error fetching categories from Sanity:', error)
+    return []
+  }
 }
