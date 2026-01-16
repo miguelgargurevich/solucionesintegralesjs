@@ -693,6 +693,13 @@ export default function AdminPage() {
     }
   }, [])
 
+  // Cargar proyectos cuando el usuario se autentica
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      fetchProjects()
+    }
+  }, [isAuthenticated, loading])
+
   const verifyToken = async (token: string) => {
     try {
       const res = await fetch('/api/admin/auth', {
