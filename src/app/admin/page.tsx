@@ -716,10 +716,26 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/projects', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` },
       })
+      
+      if (!res.ok) {
+        console.error('Error response:', res.status, res.statusText)
+        return
+      }
+      
       const data = await res.json()
-      setProjects(data.projects || [])
+      console.log('Proyectos recibidos:', data)
+      
+      if (Array.isArray(data.projects)) {
+        setProjects(data.projects)
+      } else if (Array.isArray(data)) {
+        setProjects(data)
+      } else {
+        console.error('Formato de datos inesperado:', data)
+        setProjects([])
+      }
     } catch (error) {
       console.error('Error fetching projects:', error)
+      setProjects([])
     }
   }
 

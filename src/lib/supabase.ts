@@ -107,15 +107,24 @@ export async function getCategories(): Promise<DBCategory[]> {
 // ============== FUNCIONES ADMIN ==============
 
 export async function getAllProjects(): Promise<DBProject[]> {
-  if (!supabase) return []
+  if (!supabase) {
+    console.error('Supabase client no está inicializado')
+    return []
+  }
   
   try {
+    console.log('Consultando todos los proyectos...')
     const { data, error } = await supabase
       .from('projects')
       .select('*')
       .order('order_index', { ascending: true })
     
-    if (error) throw error
+    if (error) {
+      console.error('Error de Supabase:', error)
+      throw error
+    }
+    
+    console.log('Proyectos obtenidos de Supabase:', data?.length || 0)
     return data || []
   } catch (error) {
     console.error('Error fetching all projects:', error)
