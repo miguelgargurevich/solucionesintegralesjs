@@ -5,10 +5,10 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSp
 import Image from 'next/image'
 import { X, ChevronLeft, ChevronRight, Maximize2, Play } from 'lucide-react'
 import { projects as localProjects } from '@/lib/data'
-import { getProjects, urlFor } from '@/lib/sanity'
+import { getProjects } from '@/lib/supabase'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@/components/ui/visually-hidden'
-import type { SanityProject } from '@/types'
+import type { DBProject } from '@/lib/supabase'
 
 // Tipo unificado para manejar ambos formatos
 type ProjectType = {
@@ -407,29 +407,28 @@ export default function ProjectsSection() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
 
-  // Cargar proyectos desde Sanity o usar datos locales como fallback
+  // Cargar proyectos desde Supabase o usar datos locales como fallback
   useEffect(() => {
     async function loadProjects() {
       try {
-        const sanityProjects = await getProjects()
+        const supabaseProjects = await getProjects()
         
-        if (sanityProjects && sanityProjects.length > 0) {
-          // Transformar proyectos de Sanity al formato unificado
-          const formattedProjects: ProjectType[] = sanityProjects.map((p: SanityProject) => ({
-            id: p._id,
+        if (supabaseProjects && supabaseProjects.length > 0) {
+          // Transformar proyectos de Supabase al formato unificado
+          const formattedProjects: ProjectType[] = supabaseProjects.map((p: DBProject) => ({
+            id: p.id,
             title: p.title,
             client: p.client,
             category: p.category,
             description: p.description,
-            image: p.mainImage ? urlFor(p.mainImage).width(800).height(600).url() : '',
+            image: p.main_image,
             year: p.year,
             featured: p.featured,
-            gallery: p.gallery?.map((img) => ({
-              url: urlFor(img).width(1200).height(800).url(),
-              alt: img.alt,
-              caption: img.caption,
+            gallery: p.gallery?.map((url: string) => ({
+              url,
+              alt: p.title,
             })),
-            videoUrl: p.videoUrl,
+            videoUrl: p.video_url,
           }))
           setProjects(formattedProjects)
         } else {
@@ -437,7 +436,7 @@ export default function ProjectsSection() {
           setProjects(localProjects.map(p => ({ ...p, gallery: undefined, videoUrl: undefined })))
         }
       } catch (error) {
-        console.log('Usando datos locales (Sanity no configurado):', error)
+        console.log('Usando datos locales (Supabase no configurado):', error)
         setProjects(localProjects.map(p => ({ ...p, gallery: undefined, videoUrl: undefined })))
       } finally {
         setIsLoading(false)
