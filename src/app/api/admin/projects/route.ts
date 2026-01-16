@@ -33,11 +33,10 @@ export async function GET(request: NextRequest) {
 
   try {
     const projects = await getAllProjects()
-    console.log('getAllProjects devolvió:', projects?.length || 0, 'proyectos')
-    return NextResponse.json({ projects: projects || [] })
+    return NextResponse.json({ projects })
   } catch (error) {
     console.error('Error fetching projects:', error)
-    return NextResponse.json({ error: 'Error al obtener proyectos', projects: [] }, { status: 500 })
+    return NextResponse.json({ error: 'Error al obtener proyectos' }, { status: 500 })
   }
 }
 

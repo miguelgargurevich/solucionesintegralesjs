@@ -582,8 +582,8 @@ export default function ProjectsSection() {
           </motion.div>
         )}
 
-        {/* View all projects button */}
-        <motion.div
+        {/* View all projects button comentado por el usuario*/}
+        {/* <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -600,7 +600,7 @@ export default function ProjectsSection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </motion.button>
-        </motion.div>
+        </motion.div> */}
       </div>
 
       {/* Lightbox */}
