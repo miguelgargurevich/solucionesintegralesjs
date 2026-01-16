@@ -596,11 +596,41 @@ export default function AdminPage() {
   }
 
   const togglePublished = async (project: Project) => {
-    await handleSave({ ...project, published: !project.published })
+    const token = localStorage.getItem('admin_token')
+    try {
+      const res = await fetch('/api/admin/projects', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: project.id, published: !project.published }),
+      })
+      if (res.ok) {
+        fetchProjects()
+      }
+    } catch (error) {
+      console.error('Error updating published:', error)
+    }
   }
 
   const toggleFeatured = async (project: Project) => {
-    await handleSave({ ...project, featured: !project.featured })
+    const token = localStorage.getItem('admin_token')
+    try {
+      const res = await fetch('/api/admin/projects', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: project.id, featured: !project.featured }),
+      })
+      if (res.ok) {
+        fetchProjects()
+      }
+    } catch (error) {
+      console.error('Error updating featured:', error)
+    }
   }
 
   if (loading) {
