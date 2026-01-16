@@ -9,6 +9,52 @@ export interface Project {
   featured?: boolean
 }
 
+// Tipos para Sanity CMS
+export interface SanityImage {
+  _type: 'image'
+  asset: {
+    _ref: string
+    _type: 'reference'
+  }
+  alt?: string
+  caption?: string
+  hotspot?: {
+    x: number
+    y: number
+    height: number
+    width: number
+  }
+}
+
+export interface SanityProject {
+  _id: string
+  title: string
+  slug: string
+  client: string
+  category: string
+  categorySlug?: string
+  description: string
+  fullDescription?: any[] // Portable Text
+  mainImage: SanityImage
+  gallery?: SanityImage[]
+  videoUrl?: string
+  year: string
+  location?: string
+  duration?: string
+  scope?: string[]
+  services?: string[]
+  featured: boolean
+  order?: number
+}
+
+export interface SanityCategory {
+  _id: string
+  title: string
+  slug: string
+  description?: string
+  color?: string
+}
+
 export interface Service {
   id: string
   title: string

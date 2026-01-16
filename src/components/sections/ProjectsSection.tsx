@@ -3,9 +3,26 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import Image from 'next/image'
-import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react'
-import { projects } from '@/lib/data'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { X, ChevronLeft, ChevronRight, Maximize2, Play } from 'lucide-react'
+import { projects as localProjects } from '@/lib/data'
+import { getProjects, urlFor } from '@/lib/sanity'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { VisuallyHidden } from '@/components/ui/visually-hidden'
+import type { SanityProject } from '@/types'
+
+// Tipo unificado para manejar ambos formatos
+type ProjectType = {
+  id: string
+  title: string
+  client: string
+  category: string
+  description: string
+  image: string
+  year: string
+  featured?: boolean
+  gallery?: { url: string; alt?: string; caption?: string }[]
+  videoUrl?: string
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -38,9 +55,9 @@ function ProjectCard({
   index, 
   onSelect 
 }: { 
-  project: typeof projects[0]
+  project: ProjectType
   index: number
-  onSelect: (project: typeof projects[0]) => void 
+  onSelect: (project: ProjectType) => void 
 }) {
   const cardRef = useRef<HTMLDivElement>(null)
   const mouseX = useMotionValue(0)
@@ -168,6 +185,27 @@ function ProjectCard({
   )
 }
 
+// Función para extraer el ID de video de YouTube o Vimeo
+function getVideoEmbedUrl(url: string): string | null {
+  if (!url) return null
+  
+  // YouTube
+  const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/
+  const youtubeMatch = url.match(youtubeRegex)
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1`
+  }
+  
+  // Vimeo
+  const vimeoRegex = /vimeo\.com\/(\d+)/
+  const vimeoMatch = url.match(vimeoRegex)
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`
+  }
+  
+  return null
+}
+
 // Lightbox premium
 function ProjectLightbox({ 
   project, 
@@ -176,17 +214,51 @@ function ProjectLightbox({
   onPrev,
   onNext
 }: { 
-  project: typeof projects[0] | null
+  project: ProjectType | null
   isOpen: boolean
   onClose: () => void
   onPrev: () => void
   onNext: () => void
 }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [showVideo, setShowVideo] = useState(false)
+  
+  // Reset video y galería cuando cambia el proyecto o se cierra
+  useEffect(() => {
+    setShowVideo(false)
+    setCurrentImageIndex(0)
+  }, [project?.id, isOpen])
+  
   if (!project) return null
+
+  // Construir array de imágenes (principal + galería)
+  const allImages = [
+    { url: project.image, alt: project.title },
+    ...(project.gallery || []).map(img => ({ url: img.url, alt: img.alt || project.title, caption: img.caption }))
+  ]
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (allImages.length > 1) {
+      setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+    }
+  }
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (allImages.length > 1) {
+      setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+    }
+  }
+  
+  const videoEmbedUrl = project.videoUrl ? getVideoEmbedUrl(project.videoUrl) : null
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl p-0 bg-transparent border-none overflow-hidden">
+        <VisuallyHidden>
+          <DialogTitle>{project.title}</DialogTitle>
+        </VisuallyHidden>
         <motion.div
           initial={{ opacity: 0, scale: 0.9, rotateX: 15 }}
           animate={{ opacity: 1, scale: 1, rotateX: 0 }}
@@ -194,22 +266,88 @@ function ProjectLightbox({
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="relative bg-graphite-light rounded-2xl overflow-hidden border border-metal-gray/20"
         >
-          {/* Image container */}
+          {/* Image container with gallery support */}
           <div className="relative aspect-video">
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              className="object-cover"
-              priority
-            />
-            {/* Industrial camera shutter effect overlay */}
-            <motion.div
-              initial={{ scaleY: 1 }}
-              animate={{ scaleY: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              className="absolute inset-0 bg-graphite origin-top"
-            />
+            {showVideo && videoEmbedUrl ? (
+              // Mostrar video embebido
+              <div className="relative w-full h-full bg-black">
+                <iframe
+                  src={videoEmbedUrl}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+                {/* Botón para volver a las imágenes */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowVideo(false); }}
+                  className="absolute top-4 left-4 w-10 h-10 rounded-full bg-black/70 backdrop-blur-md flex items-center justify-center hover:bg-black/90 transition-colors z-20"
+                  title="Volver a imágenes"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+            ) : (
+              // Mostrar imágenes
+              <>
+                <Image
+                  src={allImages[currentImageIndex]?.url || project.image}
+                  alt={allImages[currentImageIndex]?.alt || project.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                {/* Industrial camera shutter effect overlay */}
+                <motion.div
+                  initial={{ scaleY: 1 }}
+                  animate={{ scaleY: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="absolute inset-0 bg-graphite origin-top"
+                />
+                
+                {/* Image navigation (si hay galería) */}
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={handlePrevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors z-10"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-white" />
+                    </button>
+                    <button
+                      onClick={handleNextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors z-10"
+                    >
+                      <ChevronRight className="w-5 h-5 text-white" />
+                    </button>
+                    {/* Indicadores de imagen */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      {allImages.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            idx === currentImageIndex 
+                              ? 'bg-white w-6' 
+                              : 'bg-white/50 hover:bg-white/80'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+                
+                {/* Botón para ver video */}
+                {videoEmbedUrl && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setShowVideo(true); }}
+                    className="absolute top-4 right-4 flex items-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 rounded-full text-white text-sm font-medium transition-colors z-10 shadow-lg"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    Ver Video
+                  </button>
+                )}
+              </>
+            )}
           </div>
 
           {/* Content */}
@@ -229,21 +367,33 @@ function ProjectLightbox({
               </div>
             </div>
             <p className="text-metal-gray leading-relaxed">{project.description}</p>
+            
+            {/* Galería de miniaturas */}
+            {allImages.length > 1 && (
+              <div className="mt-6 flex gap-2 overflow-x-auto pb-2">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      idx === currentImageIndex 
+                        ? 'border-industrial-blue' 
+                        : 'border-transparent hover:border-metal-gray/50'
+                    }`}
+                  >
+                    <Image
+                      src={img.url}
+                      alt={img.alt || `Imagen ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Navigation buttons */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onPrev(); }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-graphite/80 backdrop-blur-md flex items-center justify-center border border-metal-gray/20 hover:border-industrial-blue/50 transition-colors group"
-          >
-            <ChevronLeft className="w-6 h-6 text-white group-hover:text-industrial-blue transition-colors" />
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); onNext(); }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-graphite/80 backdrop-blur-md flex items-center justify-center border border-metal-gray/20 hover:border-industrial-blue/50 transition-colors group"
-          >
-            <ChevronRight className="w-6 h-6 text-white group-hover:text-industrial-blue transition-colors" />
-          </button>
+         
         </motion.div>
       </DialogContent>
     </Dialog>
@@ -251,9 +401,51 @@ function ProjectLightbox({
 }
 
 export default function ProjectsSection() {
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null)
+  const [projects, setProjects] = useState<ProjectType[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
+
+  // Cargar proyectos desde Sanity o usar datos locales como fallback
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const sanityProjects = await getProjects()
+        
+        if (sanityProjects && sanityProjects.length > 0) {
+          // Transformar proyectos de Sanity al formato unificado
+          const formattedProjects: ProjectType[] = sanityProjects.map((p: SanityProject) => ({
+            id: p._id,
+            title: p.title,
+            client: p.client,
+            category: p.category,
+            description: p.description,
+            image: p.mainImage ? urlFor(p.mainImage).width(800).height(600).url() : '',
+            year: p.year,
+            featured: p.featured,
+            gallery: p.gallery?.map((img) => ({
+              url: urlFor(img).width(1200).height(800).url(),
+              alt: img.alt,
+              caption: img.caption,
+            })),
+            videoUrl: p.videoUrl,
+          }))
+          setProjects(formattedProjects)
+        } else {
+          // Usar datos locales como fallback
+          setProjects(localProjects.map(p => ({ ...p, gallery: undefined, videoUrl: undefined })))
+        }
+      } catch (error) {
+        console.log('Usando datos locales (Sanity no configurado):', error)
+        setProjects(localProjects.map(p => ({ ...p, gallery: undefined, videoUrl: undefined })))
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    loadProjects()
+  }, [])
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -262,7 +454,7 @@ export default function ProjectsSection() {
 
   const parallaxY = useTransform(scrollYProgress, [0, 1], [100, -100])
 
-  const handleSelectProject = (project: typeof projects[0]) => {
+  const handleSelectProject = (project: ProjectType) => {
     setSelectedProject(project)
     setIsLightboxOpen(true)
   }
@@ -355,22 +547,41 @@ export default function ProjectsSection() {
         </motion.div>
 
         {/* Masonry Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[280px] gap-6"
-        >
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={index}
-              onSelect={handleSelectProject}
-            />
-          ))}
-        </motion.div>
+        {isLoading ? (
+          // Skeleton loading
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[280px] gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div 
+                key={i} 
+                className={`relative rounded-2xl overflow-hidden bg-graphite-light/50 animate-pulse ${i === 0 || i === 4 ? 'md:col-span-2 md:row-span-2' : ''}`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-graphite via-graphite/50 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="h-4 w-24 bg-metal-gray/20 rounded mb-3" />
+                  <div className="h-6 w-3/4 bg-metal-gray/20 rounded mb-2" />
+                  <div className="h-4 w-1/2 bg-metal-gray/20 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-100px' }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[280px] gap-6"
+          >
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                onSelect={handleSelectProject}
+              />
+            ))}
+          </motion.div>
+        )}
 
         {/* View all projects button */}
         <motion.div
