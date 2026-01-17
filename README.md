@@ -31,42 +31,43 @@
 ### 🚀 Secciones del Landing
 
 #### 🏠 Hero Section
-- Escena 3D interactiva con Three.js/React Three Fiber
-- Título animado con efecto de escritura
-- Partículas flotantes industriales
+- Escena 3D interactiva adaptable a tema claro/oscuro
+- Three.js/React Three Fiber con engranajes industriales animados
+- Título con animación de entrada letter-by-letter
+- Fondo dinámico según modo dark/light
 - CTA buttons con efectos hover premium
-- Scroll indicator animado
+- Overlay con gradiente suave
 
-#### 💼 Servicios
-- Grid de servicios con iconos animados
-- Cards con efecto de hover magnético
-- Animaciones de entrada escalonadas
-- Iconos SVG personalizados para cada servicio:
-  - Ingeniería Estructural
-  - Obras Civiles
-  - Montaje Industrial
-  - Piping Industrial
-  - Estructuras Metálicas
-  - Señalización Industrial
+#### 💼 Servicios (Dinámico)
+- Grid responsive cargado desde Supabase
+- Cards con efecto 3D y glow en hover
+- Control de visibilidad desde CMS
+- Iconos de Lucide personalizables
+- Features configurables por servicio
+- Ordenamiento desde panel admin
 
-#### 📂 Proyectos
-- Grid masonry con efecto 3D
-- Lightbox premium con galería de imágenes
+#### 📂 Proyectos (Dinámico)
+- Grid masonry con lazy loading
+- Galería múltiple de imágenes
 - Soporte para videos de YouTube/Vimeo
+- Upload de imágenes desde frontend
 - Filtro por categorías
 - Efecto grayscale → color en hover
-- Indicadores de proyecto destacado
+- Gestión completa desde CMS
 
 #### 🏢 Sobre Nosotros
 - Estadísticas animadas con contadores
-- Timeline de experiencia
-- Cards de valores corporativos
+- Video embed con thumbnail personalizado
+- Cards de misión y visión
 - Efectos parallax en scroll
 
-#### 🤝 Clientes
-- Carrusel infinito de logos
+#### 🤝 Clientes (Dinámico)
+- Logos cargados desde Supabase Storage
+- Upload directo desde panel admin
+- Carrusel infinito dual (izq/der)
 - Efecto grayscale en reposo
-- Animación suave y continua
+- Control de visibilidad por cliente
+- Logos organizables por orden
 
 #### 📧 Contacto
 - Formulario con validación
@@ -78,44 +79,68 @@
 
 - ✅ **Lighthouse Score 95+** en todas las métricas
 - ✅ **Core Web Vitals** optimizados
-- ✅ **Imágenes optimizadas** con Next.js Image
-- ✅ **Lazy loading** en componentes pesados
+- ✅ **Datos Frescos**: Endpoints sin caché con `force-dynamic`
+- ✅ **Imágenes optimizadas** con Next.js Image + Supabase CDN
+- ✅ **Lazy loading** en componentes 3D y galería
 - ✅ **SEO completo**: meta tags, Open Graph, Twitter Cards
 - ✅ **Sitemap XML** dinámico
 - ✅ **robots.txt** configurado
 - ✅ **Schema.org** para FAQ y organización
+- ✅ **Adaptable a temas**: Modo claro/oscuro sin FOUC (Flash of Unstyled Content)
 
 ---
 
-## 🛠️ CMS Personalizado
+## 🛠️ CMS Completo con 10 Módulos
 
-Sistema de gestión de contenido integrado con Supabase.
+Sistema de gestión de contenido profesional integrado con Supabase.
 
 ### Panel de Administración (`/admin`)
 
 <div align="center">
 
-| Función | Descripción |
-|---------|-------------|
-| 🔐 **Login Seguro** | Autenticación con credenciales hardcodeadas |
-| ➕ **Crear Proyectos** | Formulario completo con todos los campos |
-| ✏️ **Editar Proyectos** | Modificación en tiempo real |
-| 🗑️ **Eliminar Proyectos** | Con confirmación de seguridad |
-| 📤 **Subir Imágenes** | Directo a Supabase Storage |
-| 🎬 **Videos** | Soporte YouTube y Vimeo |
-| ⭐ **Destacados** | Marcar proyectos como featured |
-| 👁️ **Publicar/Ocultar** | Control de visibilidad |
+| Módulo | Funcionalidades |
+|--------|-----------------|
+| 🔐 **Autenticación** | Login con JWT (SHA-256), tokens 24h, logout |
+| ⚙️ **Configuración** | Branding, colores, contacto, redes sociales con upload |
+| 🧭 **Navegación** | Crear/editar/ordenar items del menú, toggle visibilidad |
+| 🎯 **Hero** | Título, descripción, CTAs, tipo de fondo |
+| 👥 **Nosotros** | Contenido, misión, visión, stats animadas |
+| 🛠️ **Servicios** | CRUD completo, iconos, features, orden |
+| 📂 **Proyectos** | Galería múltiple, videos, categorías, featured |
+| 🏢 **Clientes** | Logos con upload, descripción, orden, featured |
+| 🔗 **Footer** | Links organizados por sección |
+| 👁️ **Secciones** | Control de visibilidad de cada sección |
 
 </div>
 
-### Características del CMS
+### 🎨 Características del CMS
 
-- **UI Épica**: Diseño con efectos glow, animaciones y tema oscuro
-- **Responsive**: Funciona perfectamente en móvil
-- **Galería Múltiple**: Hasta N imágenes por proyecto
-- **Preview de Imágenes**: Vista previa antes de guardar
-- **Auto-slug**: Generación automática de URLs amigables
-- **Token 24h**: Sesión segura con expiración automática
+#### Sistema de Autenticación JWT
+- ✅ Login seguro con username/password
+- ✅ Tokens SHA-256 con expiración 24h
+- ✅ Validación automática en todos los endpoints
+- ✅ Logout con limpieza de sesión
+
+#### Upload de Archivos Integrado
+- ✅ **Upload desde Frontend**: Subir imágenes directamente desde cada módulo
+- ✅ **Preview en Tiempo Real**: Vista previa antes de guardar
+- ✅ **Múltiples Carpetas**: Organización automática (clients/, projects/, branding/)
+- ✅ **Validación**: Tipos permitidos (jpg, png, webp, svg), límite 5MB
+- ✅ **Storage en Supabase**: CDN global automático
+
+#### Gestión Dinámica de Contenido
+- ✅ **Navegación Dinámica**: Items del menú cargados desde BD
+- ✅ **Secciones Adaptables**: Clientes y Servicios cargan datos en tiempo real
+- ✅ **Sin Caché**: Datos siempre frescos con `force-dynamic`
+- ✅ **Ordenamiento**: Drag & drop para reordenar items
+- ✅ **Visibilidad**: Toggle para mostrar/ocultar elementos
+
+#### Interfaz Premium
+- 🎨 UI épica con efectos glow y animaciones
+- 📱 100% responsive en móvil, tablet y desktop
+- 🌙 Tema oscuro profesional
+- ⚡ Feedback instantáneo en todas las acciones
+- 🔔 Notificaciones de éxito/error elegantes
 
 ---
 
@@ -129,18 +154,20 @@ Frontend
 ├── Tailwind CSS 3.4
 ├── Framer Motion
 ├── Three.js / React Three Fiber
-└── Radix UI (Primitives)
+└── Radix UI + shadcn/ui
 
-Backend
-├── Supabase (PostgreSQL)
-├── Supabase Storage (Imágenes)
-├── Next.js API Routes
-└── Resend (Emails)
+Backend & CMS
+├── Supabase PostgreSQL (Base de datos)
+├── Supabase Storage (CDN para imágenes)
+├── Next.js API Routes (Backend)
+├── Resend (Servicio de emails)
+└── JWT Authentication (SHA-256)
 
-Deploy
-├── Vercel
+Deploy & DevOps
+├── Vercel (Hosting)
 ├── Edge Functions
-└── ISR (Incremental Static Regeneration)
+├── ISR (Incremental Static Regeneration)
+└── GitHub Actions (CI/CD)
 ```
 
 ---
@@ -156,47 +183,58 @@ SolucionesIntegrales/
 ├── src/
 │   ├── app/
 │   │   ├── admin/
-│   │   │   └── page.tsx          # Panel de administración
+│   │   │   ├── modules/              # 10 módulos del CMS
+│   │   │   │   ├── NavigationModule.tsx
+│   │   │   │   ├── HeroModule.tsx
+│   │   │   │   ├── ServicesModule.tsx
+│   │   │   │   ├── ClientsModule.tsx
+│   │   │   │   ├── ProjectsModule.tsx
+│   │   │   │   ├── BrandingModule.tsx
+│   │   │   │   └── ... (10 total)
+│   │   │   └── page.tsx              # Panel principal
 │   │   ├── api/
-│   │   │   ├── admin/
-│   │   │   │   ├── auth/         # Autenticación
-│   │   │   │   ├── projects/     # CRUD proyectos
-│   │   │   │   └── upload/       # Subida de imágenes
-│   │   │   ├── contact/          # Envío de emails
-│   │   │   └── projects/         # API pública
+│   │   │   ├── admin/                # Endpoints privados
+│   │   │   │   ├── auth/             # Login JWT
+│   │   │   │   ├── navigation/       # CRUD navegación
+│   │   │   │   ├── services/         # CRUD servicios
+│   │   │   │   ├── clients/          # CRUD clientes
+│   │   │   │   ├── projects/         # CRUD proyectos
+│   │   │   │   ├── settings/         # Configuración
+│   │   │   │   └── upload/           # Upload de imágenes
+│   │   │   ├── navigation/           # API pública (sin caché)
+│   │   │   ├── services/             # API pública (sin caché)
+│   │   │   ├── clients/              # API pública (sin caché)
+│   │   │   ├── projects/             # API pública
+│   │   │   └── contact/              # Envío de emails
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   └── page.tsx
 │   ├── components/
 │   │   ├── 3d/
-│   │   │   ├── AdvancedScene3D.tsx
-│   │   │   ├── IndustrialScene.tsx
-│   │   │   └── Scene3D.tsx
+│   │   │   ├── IndustrialScene.tsx   # Escena 3D adaptable
+│   │   │   └── ... (3 escenas)
 │   │   ├── layout/
 │   │   │   ├── Footer.tsx
-│   │   │   └── Header.tsx
+│   │   │   └── Header.tsx            # Nav dinámica
 │   │   ├── providers/
-│   │   │   └── ThemeProvider.tsx
+│   │   │   └── ThemeProvider.tsx     # Dark/Light mode
 │   │   ├── sections/
-│   │   │   ├── AboutSection.tsx
-│   │   │   ├── ClientsSection.tsx
-│   │   │   ├── ContactSection.tsx
 │   │   │   ├── HeroSection.tsx
-│   │   │   ├── ProjectsSection.tsx
-│   │   │   └── ServicesSection.tsx
+│   │   │   ├── ServicesSection.tsx   # Dinámico desde BD
+│   │   │   ├── ClientsSection.tsx    # Dinámico desde BD
+│   │   │   └── ... (6 secciones)
 │   │   └── ui/
-│   │       ├── button.tsx
-│   │       ├── dialog.tsx
-│   │       ├── input.tsx
-│   │       └── ThemeToggle.tsx
+│   │       └── ... (componentes UI)
 │   ├── lib/
-│   │   ├── data.ts               # Datos locales
-│   │   ├── supabase.ts           # Cliente Supabase
+│   │   ├── auth.ts                   # JWT helpers
+│   │   ├── supabase.ts               # Cliente Supabase
 │   │   └── utils.ts
 │   └── types/
 │       └── index.ts
-├── supabase-schema.sql           # Esquema de BD
-├── CMS-SETUP.md                  # Guía de configuración
+├── supabase-schema.sql               # Esquema proyectos
+├── supabase-cms-schema.sql           # Esquema CMS completo
+├── supabase-fix-rls.sql              # Fix políticas RLS
+├── CMS-SETUP.md                      # Guía configuración
 ├── tailwind.config.ts
 ├── next.config.js
 └── package.json
