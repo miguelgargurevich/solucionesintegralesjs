@@ -92,7 +92,7 @@ export default function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen overflow-hidden bg-graphite dark:bg-graphite light:bg-gradient-to-b light:from-white light:to-gray-100"
+      className="relative min-h-screen overflow-hidden bg-graphite dark:bg-graphite light:bg-white"
       id="inicio"
     >
       {/* Escena 3D de fondo */}
@@ -104,7 +104,7 @@ export default function HeroSection() {
       </motion.div>
 
       {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-graphite/40 via-transparent to-graphite dark:from-graphite/40 dark:to-graphite light:from-white/80 light:via-transparent light:to-white z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-graphite/40 via-transparent to-graphite dark:from-graphite/40 dark:to-graphite light:from-white/90 light:via-white/50 light:to-white/90 z-10" />
       
       {/* Noise texture overlay */}
       <div className="absolute inset-0 opacity-[0.03] z-10 pointer-events-none"
@@ -130,12 +130,12 @@ export default function HeroSection() {
           </span>
         </motion.div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white dark:text-white light:text-gray-300 mb-6 tracking-tight drop-shadow-lg light:drop-shadow-none">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white dark:text-white light:text-graphite mb-6 tracking-tight drop-shadow-lg light:drop-shadow-none">
           <AnimatedText text="SOLUCIONES" className="block" />
           <span className="block mt-2 md:mt-4">
             <AnimatedText 
               text="INTEGRALES JS" 
-              className="text-industrial-blue light:text-industrial-blue-dark"
+              className="text-industrial-blue light:text-industrial-blue"
             />
           </span>
         </h1>
@@ -144,12 +144,12 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="max-w-2xl text-lg md:text-xl text-metal-gray dark:text-metal-gray light:text-gray-300 mb-12 leading-relaxed"
+          className="max-w-2xl text-lg md:text-xl text-metal-gray dark:text-metal-gray light:text-gray-700 mb-12 leading-relaxed"
         >
           Transformamos visiones en estructuras reales. Especialistas en 
-          <span className="text-white dark:text-white light:text-gray-200 font-semibold"> ingeniería estructural</span>,
-          <span className="text-white dark:text-white light:text-gray-200 font-semibold"> piping industrial</span> y
-          <span className="text-white dark:text-white light:text-gray-200 font-semibold"> montaje de equipos</span>.
+          <span className="text-white dark:text-white light:text-graphite font-semibold"> ingeniería estructural</span>,
+          <span className="text-white dark:text-white light:text-graphite font-semibold"> piping industrial</span> y
+          <span className="text-white dark:text-white light:text-graphite font-semibold"> montaje de equipos</span>.
         </motion.p>
 
         <motion.div
