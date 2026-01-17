@@ -330,6 +330,7 @@ function ProjectForm({
     try {
       const formDataUpload = new FormData()
       formDataUpload.append('file', file)
+      formDataUpload.append('folder', 'projects')
       
       const res = await fetch('/api/admin/upload', {
         method: 'POST',

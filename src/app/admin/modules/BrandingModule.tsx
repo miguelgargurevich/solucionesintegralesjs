@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Save, Upload, Loader2, Check } from 'lucide-react'
 
@@ -48,6 +48,10 @@ export default function BrandingModule() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [uploadingFavicon, setUploadingFavicon] = useState(false)
+  const logoInputRef = useRef<HTMLInputElement>(null)
+  const faviconInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetchSettings()
@@ -107,6 +111,41 @@ export default function BrandingModule() {
     }
   }
 
+  const handleFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'logo' | 'favicon',
+    setUploading: (v: boolean) => void
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const token = localStorage.getItem('admin_token')
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('folder', 'branding')
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      })
+
+      const data = await res.json()
+      if (data.success && data.url) {
+        setBranding(prev => ({ ...prev, [field]: data.url }))
+      } else {
+        alert(data.error || 'Error al subir imagen')
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+      alert('Error al subir imagen')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -159,8 +198,20 @@ export default function BrandingModule() {
                   className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
                   placeholder="/logo.svg"
                 />
-                <button className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors">
-                  <Upload className="w-5 h-5" />
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, 'logo', setUploadingLogo)}
+                  className="hidden"
+                />
+                <button 
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50"
+                >
+                  {uploadingLogo ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -175,8 +226,20 @@ export default function BrandingModule() {
                   className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
                   placeholder="/favicon.ico"
                 />
-                <button className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors">
-                  <Upload className="w-5 h-5" />
+                <input
+                  ref={faviconInputRef}
+                  type="file"
+                  accept="image/*,.ico"
+                  onChange={(e) => handleFileUpload(e, 'favicon', setUploadingFavicon)}
+                  className="hidden"
+                />
+                <button 
+                  type="button"
+                  onClick={() => faviconInputRef.current?.click()}
+                  disabled={uploadingFavicon}
+                  className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50"
+                >
+                  {uploadingFavicon ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
                 </button>
               </div>
             </div>

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Edit2, Trash2, Save, Eye, EyeOff, Star, StarOff, Upload, Users } from 'lucide-react'
+import { Plus, Edit2, Trash2, Save, Eye, EyeOff, Star, StarOff, Upload, Users, Loader2, X } from 'lucide-react'
 import { CMSClient } from '@/types'
 import Image from 'next/image'
 import Modal, { ModalFooter, FormField, FormInput } from '../components/Modal'
@@ -268,6 +268,8 @@ function ClientFormModal({
     visible: client?.visible ?? true,
     featured: client?.featured || false
   })
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Reset form when modal opens
   useEffect(() => {
@@ -283,6 +285,40 @@ function ClientFormModal({
       })
     }
   }, [isOpen, client, nextOrder])
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const token = localStorage.getItem('admin_token')
+      const uploadData = new FormData()
+      uploadData.append('file', file)
+      uploadData.append('folder', 'clients')
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: uploadData
+      })
+
+      const data = await res.json()
+      if (data.success && data.url) {
+        setFormData(prev => ({ ...prev, logo: data.url }))
+      } else {
+        alert(data.error || 'Error al subir imagen')
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+      alert('Error al subir imagen')
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -309,33 +345,51 @@ function ClientFormModal({
           />
         </FormField>
 
-        <FormField label="URL del Logo" hint="Sube el logo o ingresa la URL">
+        <FormField label="Logo del Cliente" hint="Sube el logo o ingresa la URL manualmente">
           <div className="flex gap-2">
             <div className="flex-1">
               <FormInput
                 type="text"
                 value={formData.logo}
                 onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                placeholder="/clients/logo.svg"
+                placeholder="/clients/logo.svg o URL externa"
               />
             </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
             <button 
               type="button"
-              className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-xl hover:bg-industrial-blue/30 transition-colors"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-xl hover:bg-industrial-blue/30 transition-colors disabled:opacity-50"
             >
-              <Upload className="w-5 h-5" />
+              {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
             </button>
           </div>
           {formData.logo && (
-            <div className="mt-3 p-4 bg-graphite rounded-xl border border-metal-gray/30 flex items-center justify-center">
-              <Image
-                src={formData.logo}
-                alt="Preview"
-                width={120}
-                height={60}
-                className="object-contain max-h-16"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
+            <div className="mt-3 p-4 bg-graphite rounded-xl border border-metal-gray/30 relative">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, logo: '' })}
+                className="absolute top-2 right-2 p-1 bg-red-500/80 hover:bg-red-500 rounded-full transition-colors"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+              <div className="flex items-center justify-center">
+                <Image
+                  src={formData.logo}
+                  alt="Preview"
+                  width={120}
+                  height={60}
+                  className="object-contain max-h-16"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+              </div>
             </div>
           )}
         </FormField>

@@ -198,19 +198,24 @@ export async function deleteProject(id: string): Promise<boolean> {
 
 // ============== STORAGE (Imágenes) ==============
 
-export async function uploadImage(file: File | Blob, fileName: string, folder: string = 'projects'): Promise<string | null> {
-  if (!supabase) return null
+export async function uploadImage(file: File | Blob, fileName: string, folder: string = 'uploads'): Promise<string | null> {
+  // Usar supabaseAdmin para bypass RLS en uploads
+  const client = supabaseAdmin || supabase
+  if (!client) return null
   
   try {
     const filePath = `${folder}/${fileName}`
     
-    const { error } = await supabase.storage
+    const { error } = await client.storage
       .from('images')
-      .upload(filePath, file)
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
     
     if (error) throw error
     
-    const { data } = supabase.storage
+    const { data } = client.storage
       .from('images')
       .getPublicUrl(filePath)
     
@@ -222,14 +227,15 @@ export async function uploadImage(file: File | Blob, fileName: string, folder: s
 }
 
 export async function deleteImage(url: string): Promise<boolean> {
-  if (!supabase) return false
+  const client = supabaseAdmin || supabase
+  if (!client) return false
   
   try {
     // Extraer el path del URL
     const path = url.split('/images/')[1]
     if (!path) return false
     
-    const { error } = await supabase.storage
+    const { error } = await client.storage
       .from('images')
       .remove([path])
     
