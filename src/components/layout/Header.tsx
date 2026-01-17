@@ -68,9 +68,11 @@ export default function Header() {
     fetch('/api/navigation')
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
-          // Ya vienen filtrados y ordenados desde la API
+        console.log('Navigation data:', data)
+        if (data.success && data.items) {
           setNavItems(data.items)
+        } else {
+          console.error('No navigation items found:', data)
         }
       })
       .catch(err => console.error('Error loading navigation:', err))
@@ -96,7 +98,7 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [navItems])
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false)
