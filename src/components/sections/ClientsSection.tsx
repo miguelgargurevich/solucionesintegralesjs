@@ -34,12 +34,20 @@ function ClientLogo({ client, index }: { client: typeof clients[0], index: numbe
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
       </div>
 
-      {/* Logo placeholder con nombre */}
+      {/* Logo del cliente */}
       <div className="relative flex flex-col items-center gap-2">
-        <div className="w-24 h-16 flex items-center justify-center bg-metal-gray/5 dark:bg-metal-gray/5 light:bg-gray-100 rounded-lg border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 group-hover:border-industrial-blue/30 transition-colors duration-300">
-          <span className="text-metal-gray-dark dark:text-metal-gray-dark light:text-gray-500 group-hover:text-white dark:group-hover:text-white light:group-hover:text-industrial-blue text-lg font-bold transition-colors duration-300 text-center px-2 filter grayscale group-hover:grayscale-0">
-            {client.name}
-          </span>
+        <div className="w-32 h-20 flex items-center justify-center bg-white dark:bg-white light:bg-white rounded-lg border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 group-hover:border-industrial-blue/30 transition-colors duration-300 p-3">
+          {client.logo ? (
+            <img 
+              src={client.logo} 
+              alt={client.name}
+              className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+            />
+          ) : (
+            <span className="text-metal-gray-dark text-sm font-bold text-center">
+              {client.name}
+            </span>
+          )}
         </div>
       </div>
 
