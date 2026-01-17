@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { 
   Plus, 
   Edit2, 
@@ -149,6 +149,25 @@ export default function ProjectsModule() {
     }
   }
 
+  const handleReorder = async (newOrder: Project[]) => {
+    setProjects(newOrder)
+    // Actualizar orden en el backend
+    const token = localStorage.getItem('admin_token')
+    for (let i = 0; i < newOrder.length; i++) {
+      await fetch('/api/admin/projects', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ 
+          id: newOrder[i].id, 
+          order_index: i + 1 
+        })
+      })
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -162,7 +181,7 @@ export default function ProjectsModule() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-metal-gray">
-          {projects.length} proyectos en total
+          Arrastra los proyectos para reordenarlos. Los cambios se guardan automáticamente.
         </p>
         <button
           onClick={() => { setEditingProject(undefined); setShowForm(true); }}
@@ -174,7 +193,7 @@ export default function ProjectsModule() {
       </div>
 
       {/* Projects List */}
-      <div className="grid gap-4">
+      <Reorder.Group axis="y" values={projects} onReorder={handleReorder} className="grid gap-4">
         {projects.length === 0 ? (
           <div className="text-center py-16 text-metal-gray">
             <p className="mb-4">No hay proyectos aún</p>
@@ -187,16 +206,12 @@ export default function ProjectsModule() {
           </div>
         ) : (
           projects.map((project) => (
-            <motion.div
+            <Reorder.Item
               key={project.id}
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-graphite-light rounded-xl p-4 border border-metal-gray/20 flex items-center gap-4"
+              value={project}
+              className="bg-graphite-light rounded-xl p-4 border border-metal-gray/20 flex items-center gap-4 cursor-move"
             >
-              <div className="hidden sm:block cursor-move text-metal-gray/50">
-                <GripVertical className="w-5 h-5" />
-              </div>
+              <GripVertical className="w-5 h-5 text-metal-gray/50" />
 
               <div className="relative w-20 h-16 rounded-lg overflow-hidden flex-shrink-0">
                 <Image
@@ -255,10 +270,10 @@ export default function ProjectsModule() {
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
-            </motion.div>
+            </Reorder.Item>
           ))
         )}
-      </div>
+      </Reorder.Group>
 
       {/* Form Modal */}
       <AnimatePresence>

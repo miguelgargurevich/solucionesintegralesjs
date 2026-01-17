@@ -98,7 +98,12 @@ export default function ClientsSection() {
     fetch('/api/clients')
       .then(res => res.json())
       .then(data => {
+        console.log('Clientes cargados:', data)
         if (data.success) {
+          console.log('Total clientes visibles:', data.clients?.length)
+          data.clients?.forEach((client: Client) => {
+            console.log(`Cliente: ${client.name}, Logo: ${client.logo}`)
+          })
           setClients(data.clients || [])
         }
       })

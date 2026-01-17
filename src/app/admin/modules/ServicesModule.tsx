@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, Reorder } from 'framer-motion'
 import { Plus, Edit2, Trash2, Save, X, Eye, EyeOff, Loader2, GripVertical, Wrench } from 'lucide-react'
 import { CMSService } from '@/types'
 import Modal, { ModalFooter, FormField, FormInput, FormTextarea, FormSelect } from '../components/Modal'
@@ -97,6 +97,25 @@ export default function ServicesModule() {
     }
   }
 
+  const handleReorder = async (newOrder: CMSService[]) => {
+    setServices(newOrder)
+    // Actualizar orden en el backend
+    const token = localStorage.getItem('admin_token')
+    for (let i = 0; i < newOrder.length; i++) {
+      await fetch('/api/admin/services', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+          id: newOrder[i].id, 
+          order_index: i + 1 
+        })
+      })
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -110,7 +129,7 @@ export default function ServicesModule() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-metal-gray">
-          Gestiona los servicios que ofrece la empresa.
+          Arrastra los servicios para reordenarlos. Los cambios se guardan automáticamente.
         </p>
         <button
           onClick={() => { setEditingService(null); setShowForm(true); }}
@@ -122,82 +141,78 @@ export default function ServicesModule() {
       </div>
 
       {/* Services Grid */}
-      <div className="grid gap-4">
-        {services.map((service, index) => (
-          <motion.div
-            key={service.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-            className="bg-graphite-light rounded-xl p-4 border border-metal-gray/20 flex items-center gap-4"
+      {services.length === 0 ? (
+        <div className="text-center py-16 text-metal-gray bg-graphite-light rounded-2xl border border-metal-gray/20">
+          <p className="mb-4">No hay servicios aún</p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="text-industrial-blue hover:underline"
           >
-            <div className="hidden sm:block cursor-move text-metal-gray/50">
-              <GripVertical className="w-5 h-5" />
-            </div>
+            Crear el primero
+          </button>
+        </div>
+      ) : (
+        <Reorder.Group axis="y" values={services} onReorder={handleReorder} className="grid gap-4">
+          {services.map((service) => (
+            <Reorder.Item
+              key={service.id}
+              value={service}
+              className="bg-graphite-light rounded-xl p-4 border border-metal-gray/20 flex items-center gap-4 cursor-move"
+            >
+              <GripVertical className="w-5 h-5 text-metal-gray/50" />
 
-            <div className="w-12 h-12 rounded-xl bg-industrial-blue/20 flex items-center justify-center text-industrial-blue flex-shrink-0">
-              ⚙️
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <h3 className="text-white font-medium">{service.title}</h3>
-              <p className="text-sm text-metal-gray truncate">{service.description}</p>
-              <div className="flex flex-wrap gap-1 mt-2">
-                {service.features?.slice(0, 3).map((feature, idx) => (
-                  <span 
-                    key={idx}
-                    className="px-2 py-0.5 bg-graphite text-xs text-metal-gray rounded"
-                  >
-                    {feature}
-                  </span>
-                ))}
-                {service.features && service.features.length > 3 && (
-                  <span className="px-2 py-0.5 text-xs text-metal-gray">
-                    +{service.features.length - 3} más
-                  </span>
-                )}
+              <div className="w-12 h-12 rounded-xl bg-industrial-blue/20 flex items-center justify-center text-industrial-blue flex-shrink-0">
+                ⚙️
               </div>
-            </div>
 
-            <button
-              onClick={() => toggleVisibility(service)}
-              className={`p-2 rounded-lg transition-colors ${
-                service.visible 
-                  ? 'bg-green-500/20 text-green-500' 
-                  : 'bg-red-500/20 text-red-500'
-              }`}
-            >
-              {service.visible ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-            </button>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-medium">{service.title}</h3>
+                <p className="text-sm text-metal-gray truncate">{service.description}</p>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {service.features?.slice(0, 3).map((feature, idx) => (
+                    <span 
+                      key={idx}
+                      className="px-2 py-0.5 bg-graphite text-xs text-metal-gray rounded"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                  {service.features && service.features.length > 3 && (
+                    <span className="px-2 py-0.5 text-xs text-metal-gray">
+                      +{service.features.length - 3} más
+                    </span>
+                  )}
+                </div>
+              </div>
 
-            <button
-              onClick={() => { setEditingService(service); setShowForm(true); }}
-              className="p-2 text-metal-gray hover:text-industrial-blue transition-colors"
-            >
-              <Edit2 className="w-5 h-5" />
-            </button>
+              <button
+                onClick={() => toggleVisibility(service)}
+                className={`p-2 rounded-lg transition-colors ${
+                  service.visible 
+                    ? 'bg-green-500/20 text-green-500' 
+                    : 'bg-red-500/20 text-red-500'
+                }`}
+              >
+                {service.visible ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+              </button>
 
-            <button
-              onClick={() => handleDelete(service.id)}
-              className="p-2 text-metal-gray hover:text-red-500 transition-colors"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
-          </motion.div>
-        ))}
+              <button
+                onClick={() => { setEditingService(service); setShowForm(true); }}
+                className="p-2 text-metal-gray hover:text-industrial-blue transition-colors"
+              >
+                <Edit2 className="w-5 h-5" />
+              </button>
 
-        {services.length === 0 && (
-          <div className="text-center py-16 text-metal-gray">
-            <p className="mb-4">No hay servicios aún</p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="text-industrial-blue hover:underline"
-            >
-              Crear el primero
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                onClick={() => handleDelete(service.id)}
+                className="p-2 text-metal-gray hover:text-red-500 transition-colors"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </Reorder.Item>
+          ))}
+        </Reorder.Group>
+      )}
 
       {/* Form Modal */}
       <ServiceFormModal
