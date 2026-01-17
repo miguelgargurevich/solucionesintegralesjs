@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Building2, 
@@ -11,7 +12,15 @@ import {
   Wrench, 
   Compass 
 } from 'lucide-react'
-import { services } from '@/lib/data'
+
+interface Service {
+  id: string
+  title: string
+  description: string
+  icon: string
+  features: string[]
+  order_index: number
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -49,7 +58,7 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
   'drafting-compass': Compass,
 }
 
-function ServiceCard({ service, index }: { service: typeof services[0], index: number }) {
+function ServiceCard({ service, index }: { service: Service, index: number }) {
   const IconComponent = iconMap[service.icon] || Building2
 
   return (
@@ -116,6 +125,23 @@ function ServiceCard({ service, index }: { service: typeof services[0], index: n
 }
 
 export default function ServicesSection() {
+  const [services, setServices] = useState<Service[]>([])
+  
+  // Cargar servicios desde la API
+  useEffect(() => {
+    fetch('/api/services')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setServices(data.services || [])
+        }
+      })
+      .catch(err => console.error('Error loading services:', err))
+  }, [])
+  
+  // No mostrar sección si no hay servicios
+  if (services.length === 0) return null
+  
   return (
     <section id="servicios" className="relative py-24 md:py-32 bg-graphite-dark dark:bg-graphite-dark light:bg-gray-50 overflow-hidden">
       {/* Background elements */}

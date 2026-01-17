@@ -6,19 +6,19 @@ export async function GET() {
     const supabase = getSupabaseAdmin()
     
     const { data, error } = await supabase
-      .from('navigation')
+      .from('services')
       .select('*')
       .eq('visible', true)
       .order('order_index', { ascending: true })
 
     if (error) {
-      console.error('Error fetching navigation:', error)
+      console.error('Error fetching services:', error)
       return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }
 
     return NextResponse.json({ 
       success: true, 
-      items: data || [] 
+      services: data || [] 
     })
   } catch (error: any) {
     console.error('Error:', error)

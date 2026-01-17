@@ -12,7 +12,7 @@ interface NavItem {
   label: string
   href: string
   visible: boolean
-  order: number
+  order_index: number
 }
 
 const socialIcons: Record<string, React.ElementType> = {
@@ -69,11 +69,8 @@ export default function Header() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          // Filtrar solo los visibles y ordenar
-          const visibleItems = data.items
-            .filter((item: NavItem) => item.visible)
-            .sort((a: NavItem, b: NavItem) => a.order - b.order)
-          setNavItems(visibleItems)
+          // Ya vienen filtrados y ordenados desde la API
+          setNavItems(data.items)
         }
       })
       .catch(err => console.error('Error loading navigation:', err))

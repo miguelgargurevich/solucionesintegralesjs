@@ -1,8 +1,15 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { clients } from '@/lib/data'
+
+interface Client {
+  id: string
+  name: string
+  logo: string
+  website?: string
+  order_index: number
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -16,7 +23,7 @@ const containerVariants = {
 }
 
 // Componente de logo de cliente con efectos
-function ClientLogo({ client, index }: { client: typeof clients[0], index: number }) {
+function ClientLogo({ client, index }: { client: Client, index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -58,7 +65,7 @@ function ClientLogo({ client, index }: { client: typeof clients[0], index: numbe
 }
 
 // Marquee infinito
-function InfiniteMarquee({ direction = 'left' }: { direction?: 'left' | 'right' }) {
+function InfiniteMarquee({ clients, direction = 'left' }: { clients: Client[], direction?: 'left' | 'right' }) {
   const duplicatedClients = [...clients, ...clients, ...clients]
 
   return (
@@ -84,6 +91,19 @@ function InfiniteMarquee({ direction = 'left' }: { direction?: 'left' | 'right' 
 
 export default function ClientsSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const [clients, setClients] = useState<Client[]>([])
+  
+  // Cargar clientes desde la API
+  useEffect(() => {
+    fetch('/api/clients')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setClients(data.clients || [])
+        }
+      })
+      .catch(err => console.error('Error loading clients:', err))
+  }, [])
   
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -91,6 +111,9 @@ export default function ClientsSection() {
   })
 
   const parallaxY = useTransform(scrollYProgress, [0, 1], [50, -50])
+  
+  // No mostrar sección si no hay clientes
+  if (clients.length === 0) return null
 
   return (
     <section ref={sectionRef} id="clientes" className="relative py-24 md:py-32 bg-graphite-dark dark:bg-graphite-dark light:bg-gray-50 overflow-hidden">
@@ -157,12 +180,12 @@ export default function ClientsSection() {
           
           {/* First marquee row */}
           <div className="mb-8">
-            <InfiniteMarquee direction="left" />
+            <InfiniteMarquee clients={clients} direction="left" />
           </div>
           
           {/* Second marquee row - opposite direction */}
           <div>
-            <InfiniteMarquee direction="right" />
+            <InfiniteMarquee clients={clients} direction="right" />
           </div>
         </div>
 
