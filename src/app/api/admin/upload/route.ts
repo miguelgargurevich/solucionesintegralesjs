@@ -1,10 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { uploadImage } from '@/lib/supabase'
+import { createHash } from 'crypto'
+
+// Verificar autenticación con el mismo sistema que otros endpoints
+const verifyAuth = (token: string | null): boolean => {
+  if (!token) return false
+  
+  const secret = process.env.ADMIN_SECRET || 'clave-secreta-larga'
+  const username = process.env.ADMIN_USERNAME || 'admin'
+  const password = process.env.ADMIN_PASSWORD || '112358'
+  const today = Math.floor(Date.now() / (1000 * 60 * 60 * 24))
+  
+  const todayToken = createHash('sha256')
+    .update(`${username}:${password}:${today}:${secret}`)
+    .digest('hex')
+  
+  const yesterdayToken = createHash('sha256')
+    .update(`${username}:${password}:${today - 1}:${secret}`)
+    .digest('hex')
+  
+  return token === todayToken || token === yesterdayToken
+}
 
 export async function POST(request: NextRequest) {
-  // Verificar autenticación con ADMIN_TOKEN
-  const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-  if (token !== process.env.ADMIN_TOKEN) {
+  // Verificar autenticación
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '') || null
+  if (!verifyAuth(token)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
