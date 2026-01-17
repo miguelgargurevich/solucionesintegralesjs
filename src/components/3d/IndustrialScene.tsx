@@ -8,6 +8,7 @@ import {
   Line,
 } from '@react-three/drei'
 import * as THREE from 'three'
+import { useTheme } from '@/components/providers/ThemeProvider'
 
 // ============================================
 // PARAMETRIC SURFACE - SUPERFICIE MATEMÁTICA
@@ -330,6 +331,9 @@ function SmoothCamera() {
 // MAIN SCENE EXPORT
 // ============================================
 export default function IndustrialScene() {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+  
   return (
     <div className="absolute inset-0 w-full h-full">
       <Canvas
@@ -341,11 +345,11 @@ export default function IndustrialScene() {
           powerPreference: "high-performance"
         }}
       >
-        {/* Fondo oscuro profundo */}
-        <color attach="background" args={['#050507']} />
+        {/* Fondo dinámico según tema */}
+        <color attach="background" args={[isDark ? '#050507' : '#f8fafc']} />
         
         {/* Fog sutil */}
-        <fog attach="fog" args={['#050507', 6, 18]} />
+        <fog attach="fog" args={[isDark ? '#050507' : '#f8fafc', 6, 18]} />
         
         {/* Iluminación mínima */}
         <ambientLight intensity={0.3} />
