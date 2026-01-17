@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/button'
 import { companyInfo } from '@/lib/data'
 import { useTheme } from '@/components/providers/ThemeProvider'
 
-const navItems = [
-  { label: 'Inicio', href: '#inicio' },
-  { label: 'Nosotros', href: '#nosotros' },
-  { label: 'Servicios', href: '#servicios' },
-  { label: 'Proyectos', href: '#proyectos' },
-  { label: 'Clientes', href: '#clientes' },
-  { label: 'Contacto', href: '#contacto' },
-]
+interface NavItem {
+  label: string
+  href: string
+  visible: boolean
+  order: number
+}
 
 const socialIcons: Record<string, React.ElementType> = {
   linkedin: Linkedin,
@@ -62,7 +60,24 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('inicio')
+  const [navItems, setNavItems] = useState<NavItem[]>([])
   const { theme, toggleTheme } = useTheme()
+
+  // Cargar items de navegación desde la API
+  useEffect(() => {
+    fetch('/api/navigation')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          // Filtrar solo los visibles y ordenar
+          const visibleItems = data.items
+            .filter((item: NavItem) => item.visible)
+            .sort((a: NavItem, b: NavItem) => a.order - b.order)
+          setNavItems(visibleItems)
+        }
+      })
+      .catch(err => console.error('Error loading navigation:', err))
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
