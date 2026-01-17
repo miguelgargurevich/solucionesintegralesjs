@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { verifyRequest } from '@/lib/auth'
 
 // GET - Obtener contenido del hero (para admin, sin filtro de active)
 export async function GET() {
@@ -26,8 +27,7 @@ export async function GET() {
 // PUT - Actualizar contenido del hero
 export async function PUT(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 

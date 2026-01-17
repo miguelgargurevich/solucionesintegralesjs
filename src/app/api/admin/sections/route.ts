@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { verifyRequest } from '@/lib/auth'
 
 // GET - Obtener configuración de secciones
 export async function GET() {
@@ -25,8 +26,7 @@ export async function GET() {
 // PUT - Actualizar sección
 export async function PUT(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 

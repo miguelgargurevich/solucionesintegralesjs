@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { verifyRequest } from '@/lib/auth'
 
 // GET - Obtener contenido de about y estadísticas (para admin, sin filtros de visible)
 export async function GET() {
@@ -41,8 +42,7 @@ export async function GET() {
 // PUT - Actualizar contenido de about
 export async function PUT(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 
@@ -81,8 +81,7 @@ export async function PUT(request: NextRequest) {
 // POST - Crear nueva estadística
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 
@@ -118,8 +117,7 @@ export async function POST(request: NextRequest) {
 // DELETE - Eliminar estadística
 export async function DELETE(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 

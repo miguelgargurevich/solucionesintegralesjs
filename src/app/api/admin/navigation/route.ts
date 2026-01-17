@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { verifyRequest } from '@/lib/auth'
 
 // GET - Obtener navegación
 export async function GET() {
@@ -25,8 +26,7 @@ export async function GET() {
 // POST - Crear item de navegación
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 
@@ -62,8 +62,7 @@ export async function POST(request: NextRequest) {
 // PUT - Actualizar item de navegación
 export async function PUT(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 
@@ -100,8 +99,7 @@ export async function PUT(request: NextRequest) {
 // DELETE - Eliminar item de navegación
 export async function DELETE(request: NextRequest) {
   try {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    if (token !== process.env.ADMIN_TOKEN) {
+    if (!verifyRequest(request)) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
     }
 
