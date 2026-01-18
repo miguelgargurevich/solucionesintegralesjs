@@ -245,22 +245,27 @@ export default function BrandingModule() {
                     )}
                   </button>
                 </div>
-                {branding.logo && (
-                  <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
-                    <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
-                    <div className="bg-white rounded p-3 flex items-center justify-center h-20">
+                <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
+                  <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
+                  <div className="bg-white rounded p-3 flex items-center justify-center h-20">
+                    {branding.logo ? (
                       <img 
                         src={branding.logo} 
                         alt="Logo preview" 
                         className="max-h-full max-w-full object-contain"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none'
-                          e.currentTarget.parentElement!.innerHTML += '<span class="text-red-500 text-xs">Error al cargar imagen</span>'
+                          const parent = e.currentTarget.parentElement!
+                          parent.innerHTML = '<div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded"><span class="text-white font-bold text-2xl">SI</span></div>'
                         }}
                       />
-                    </div>
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded">
+                        <span className="text-white font-bold text-2xl">SI</span>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
 
@@ -299,22 +304,27 @@ export default function BrandingModule() {
                     )}
                   </button>
                 </div>
-                {branding.favicon && (
-                  <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
-                    <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
-                    <div className="bg-white rounded p-3 flex items-center justify-center h-12">
+                <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
+                  <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
+                  <div className="bg-white rounded p-3 flex items-center justify-center h-12">
+                    {branding.favicon ? (
                       <img 
                         src={branding.favicon} 
                         alt="Favicon preview" 
                         className="max-h-full max-w-full object-contain"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none'
-                          e.currentTarget.parentElement!.innerHTML += '<span class="text-red-500 text-xs">Error al cargar imagen</span>'
+                          const parent = e.currentTarget.parentElement!
+                          parent.innerHTML = '<div class="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded"><span class="text-white font-bold text-xs">SI</span></div>'
                         }}
                       />
-                    </div>
+                    ) : (
+                      <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded">
+                        <span className="text-white font-bold text-xs">SI</span>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>

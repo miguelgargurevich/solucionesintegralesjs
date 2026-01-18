@@ -1,27 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- Background -->
-  <rect width="512" height="512" rx="64" fill="#0F1115"/>
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0056A6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0073E6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFB800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+    </linearGradient>
+  </defs>
   
-  <!-- Gear icon representing industrial engineering -->
-  <g transform="translate(128, 128)">
-    <!-- Outer gear -->
-    <path d="M128 48L140 80L172 80L180 48L196 52L188 84L216 100L240 76L252 88L228 112L244 140L276 132L280 148L248 156L248 188L280 196L276 212L244 204L228 232L252 256L240 268L216 244L188 260L196 292L180 296L172 264L140 264L128 296L112 292L120 260L92 244L68 268L56 256L80 232L64 204L32 212L28 196L60 188L60 156L28 148L32 132L64 140L80 112L56 88L68 76L92 100L120 84L112 52L128 48Z" 
-          fill="#0056A6" 
-          stroke="#D7D8DA" 
-          stroke-width="4"/>
-    
-    <!-- Inner circle -->
-    <circle cx="128" cy="172" r="48" fill="#0F1115" stroke="#FFC300" stroke-width="4"/>
-    
-    <!-- Center dot -->
-    <circle cx="128" cy="172" r="16" fill="#FFC300"/>
-  </g>
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGrad)"/>
   
-  <!-- JS letters -->
-  <text x="256" y="420" 
+  <!-- Industrial accent line -->
+  <rect x="100" y="236" width="312" height="40" fill="url(#accentGrad)" rx="20"/>
+  
+  <!-- Text SI (Soluciones Integrales) -->
+  <text x="256" y="350" 
         font-family="Arial, sans-serif" 
-        font-size="48" 
+        font-size="240" 
         font-weight="bold" 
         fill="#FFFFFF" 
-        text-anchor="middle">JS</text>
+        text-anchor="middle">SI</text>
+  
+  <!-- Subtitle JS -->
+  <text x="256" y="450" 
+        font-family="Arial, sans-serif" 
+        font-size="56" 
+        font-weight="600" 
+        fill="#FFFFFF" 
+        text-anchor="middle" 
+        opacity="0.9">JS</text>
 </svg>
