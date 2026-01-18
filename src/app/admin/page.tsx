@@ -52,6 +52,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
   const [activeModule, setActiveModule] = useState<CMSModule>('dashboard')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState(false)
 
   // Verificar autenticación al cargar
   useEffect(() => {
@@ -62,6 +64,18 @@ export default function AdminPage() {
       setLoading(false)
     }
   }, [])
+
+  // Cargar logo desde settings de branding
+  useEffect(() => {
+    fetch('/api/admin/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data?.branding?.logo) {
+          setLogoUrl(data.data.branding.logo)
+        }
+      })
+      .catch(err => console.error('Error loading branding:', err))
+  }, [activeModule]) // Recargar cuando cambie el módulo (por si se actualiza el logo)
 
   const verifyToken = async (token: string) => {
     try {
@@ -137,8 +151,19 @@ export default function AdminPage() {
         {/* Logo */}
         <div className="p-4 border-b border-metal-gray/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-industrial-blue to-industrial-blue-dark flex items-center justify-center shadow-lg flex-shrink-0">
-              <span className="text-white font-bold text-lg">SI</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-lg flex-shrink-0">
+              {logoUrl && !logoError ? (
+                <img 
+                  src={logoUrl} 
+                  alt="Logo"
+                  className="w-full h-full object-contain"
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-industrial-blue to-industrial-blue-dark flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">SI</span>
+                </div>
+              )}
             </div>
             <AnimatePresence>
               {!sidebarCollapsed && (
