@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { Menu, X, Phone, Mail, Sun, Moon, Linkedin, Facebook, Instagram } from 'lucide-react'
+import { Menu, X, Phone, Mail, Sun, Moon, Linkedin, Facebook, Instagram, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { companyInfo } from '@/lib/data'
 import { useTheme } from '@/components/providers/ThemeProvider'
@@ -63,7 +63,23 @@ export default function Header() {
   const [navItems, setNavItems] = useState<NavItem[]>([])
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [logoError, setLogoError] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const { theme, toggleTheme } = useTheme()
+
+  // Verificar si está autenticado como admin
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token')
+    if (token) {
+      // Verificar token
+      fetch('/api/admin/auth', {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setIsAdmin(data.valid))
+        .catch(() => setIsAdmin(false))
+    }
+  }, [])
 
   // Cargar items de navegación desde la API
   useEffect(() => {
@@ -232,6 +248,19 @@ export default function Header() {
 
             {/* CTA Button + Theme Toggle */}
             <div className="hidden lg:flex items-center gap-3">
+              {/* Admin Panel Access */}
+              {isAdmin && (
+                <motion.a
+                  href="/admin"
+                  className="w-10 h-10 rounded-lg bg-industrial-blue/20 flex items-center justify-center text-industrial-blue hover:bg-industrial-blue/30 transition-colors border border-industrial-blue/30"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  title="Panel de Administración"
+                >
+                  <Settings className="w-5 h-5" />
+                </motion.a>
+              )}
+
               {/* Theme Toggle */}
               <motion.button
                 onClick={toggleTheme}
@@ -342,6 +371,17 @@ export default function Header() {
 
                 {/* Contact info */}
                 <div className="pt-6 border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 space-y-4">
+                  {/* Admin Panel Access - Mobile */}
+                  {isAdmin && (
+                    <a
+                      href="/admin"
+                      className="flex items-center gap-3 text-industrial-blue hover:text-industrial-blue-light transition-colors"
+                    >
+                      <Settings className="w-5 h-5" />
+                      <span className="font-medium">Panel de Administración</span>
+                    </a>
+                  )}
+                  
                   <a
                     href={`tel:${companyInfo.phone}`}
                     className="flex items-center gap-3 text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors"
