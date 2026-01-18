@@ -24,6 +24,8 @@ const containerVariants = {
 
 // Componente de logo de cliente con efectos
 function ClientLogo({ client, index }: { client: Client, index: number }) {
+  const [imageError, setImageError] = useState(false)
+  
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -43,19 +45,24 @@ function ClientLogo({ client, index }: { client: Client, index: number }) {
 
       {/* Logo del cliente */}
       <div className="relative flex flex-col items-center gap-2">
-        <div className="w-32 h-20 flex items-center justify-center bg-white dark:bg-white light:bg-white rounded-lg border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 group-hover:border-industrial-blue/30 transition-colors duration-300 p-3">
-          {client.logo ? (
+        <div className="w-40 h-24 flex items-center justify-center bg-white dark:bg-white light:bg-white rounded-lg border border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 group-hover:border-industrial-blue/30 transition-colors duration-300 p-4">
+          {client.logo && !imageError ? (
             <img 
               src={client.logo} 
               alt={client.name}
-              className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+              onError={() => setImageError(true)}
+              className="max-w-full max-h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
             />
           ) : (
-            <span className="text-metal-gray-dark text-sm font-bold text-center">
+            <span className="text-graphite dark:text-graphite light:text-graphite text-sm font-bold text-center px-2">
               {client.name}
             </span>
           )}
         </div>
+        {/* Mostrar nombre debajo del logo en hover */}
+        <span className="text-xs text-metal-gray dark:text-metal-gray light:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center whitespace-nowrap">
+          {client.name}
+        </span>
       </div>
 
       {/* Border glow */}
