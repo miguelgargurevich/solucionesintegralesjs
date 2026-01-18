@@ -267,8 +267,8 @@ export default function Header() {
 
             {/* CTA Button + Theme Toggle */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* Admin Panel Access */}
-              {isAdmin && (
+              {/* Admin Panel Access / Login */}
+              {isAdmin ? (
                 <motion.a
                   href="/admin"
                   className="w-10 h-10 rounded-lg bg-industrial-blue/20 flex items-center justify-center text-industrial-blue hover:bg-industrial-blue/30 transition-colors border border-industrial-blue/30"
@@ -277,6 +277,16 @@ export default function Header() {
                   title="Panel de Administración"
                 >
                   <Settings className="w-5 h-5" />
+                </motion.a>
+              ) : (
+                <motion.a
+                  href="/admin"
+                  className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-graphite-light dark:bg-graphite-light light:bg-gray-100 text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors border border-metal-gray/20 dark:border-metal-gray/20 light:border-gray-200 text-sm font-medium"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Admin</span>
                 </motion.a>
               )}
 
@@ -390,16 +400,16 @@ export default function Header() {
 
                 {/* Contact info */}
                 <div className="pt-6 border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 space-y-4">
-                  {/* Admin Panel Access - Mobile */}
-                  {isAdmin && (
-                    <a
-                      href="/admin"
-                      className="flex items-center gap-3 text-industrial-blue hover:text-industrial-blue-light transition-colors"
-                    >
-                      <Settings className="w-5 h-5" />
-                      <span className="font-medium">Panel de Administración</span>
-                    </a>
-                  )}
+                  {/* Admin Panel Access / Login - Mobile */}
+                  <a
+                    href="/admin"
+                    className="flex items-center gap-3 text-industrial-blue hover:text-industrial-blue-light transition-colors"
+                  >
+                    <Settings className="w-5 h-5" />
+                    <span className="font-medium">
+                      {isAdmin ? 'Panel de Administración' : 'Acceso Admin'}
+                    </span>
+                  </a>
                   
                   <a
                     href={`tel:${companyInfo.phone}`}

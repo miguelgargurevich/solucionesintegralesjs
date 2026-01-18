@@ -5,7 +5,6 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSp
 import Image from 'next/image'
 import { X, ChevronLeft, ChevronRight, Maximize2, Play } from 'lucide-react'
 import { projects as localProjects } from '@/lib/data'
-import { getProjects } from '@/lib/supabase'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import type { DBProject } from '@/lib/supabase'
@@ -407,15 +406,16 @@ export default function ProjectsSection() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
 
-  // Cargar proyectos desde Supabase o usar datos locales como fallback
+  // Cargar proyectos desde API o usar datos locales como fallback
   useEffect(() => {
     async function loadProjects() {
       try {
-        const supabaseProjects = await getProjects()
+        const response = await fetch('/api/projects')
+        const data = await response.json()
         
-        if (supabaseProjects && supabaseProjects.length > 0) {
-          // Transformar proyectos de Supabase al formato unificado
-          const formattedProjects: ProjectType[] = supabaseProjects.map((p: DBProject) => ({
+        if (data.success && data.projects && data.projects.length > 0) {
+          // Transformar proyectos de la API al formato unificado
+          const formattedProjects: ProjectType[] = data.projects.map((p: DBProject) => ({
             id: p.id,
             title: p.title,
             client: p.client,
@@ -436,7 +436,8 @@ export default function ProjectsSection() {
           setProjects(localProjects.map(p => ({ ...p, gallery: undefined, videoUrl: undefined })))
         }
       } catch (error) {
-        console.log('Usando datos locales (Supabase no configurado):', error)
+        console.error('Error fetching projects:', error)
+        // Usar datos locales como fallback
         setProjects(localProjects.map(p => ({ ...p, gallery: undefined, videoUrl: undefined })))
       } finally {
         setIsLoading(false)
