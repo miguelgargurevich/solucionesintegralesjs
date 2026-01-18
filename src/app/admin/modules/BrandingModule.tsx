@@ -119,7 +119,25 @@ export default function BrandingModule() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // Validar tamaño antes de subir (5MB máximo)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      alert(`El archivo es demasiado grande. Máximo 5MB. Tamaño actual: ${(file.size / 1024 / 1024).toFixed(2)}MB`)
+      e.target.value = '' // Limpiar input
+      return
+    }
+
+    // Validar tipo de archivo
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif']
+    if (!allowedTypes.includes(file.type)) {
+      alert(`Tipo de archivo no permitido. Usa: JPG, PNG, SVG, WEBP o GIF`)
+      e.target.value = '' // Limpiar input
+      return
+    }
+
+    console.log(`Subiendo ${field}:`, file.name, `Tamaño: ${(file.size / 1024).toFixed(2)}KB`)
     setUploading(true)
+    
     try {
       const token = localStorage.getItem('admin_token')
       const formData = new FormData()
@@ -133,16 +151,20 @@ export default function BrandingModule() {
       })
 
       const data = await res.json()
+      console.log('Upload response:', data)
+      
       if (data.success && data.url) {
         setBranding(prev => ({ ...prev, [field]: data.url }))
+        alert(`✓ ${field === 'logo' ? 'Logo' : 'Favicon'} subido exitosamente`)
       } else {
         alert(data.error || 'Error al subir imagen')
       }
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Error al subir imagen')
+      alert('Error al subir imagen. Revisa la consola para más detalles.')
     } finally {
       setUploading(false)
+      e.target.value = '' // Limpiar input para permitir re-upload del mismo archivo
     }
   }
 
@@ -189,58 +211,110 @@ export default function BrandingModule() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-metal-gray mb-2">URL del Logo</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={branding.logo}
-                  onChange={(e) => setBranding({ ...branding, logo: e.target.value })}
-                  className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
-                  placeholder="/logo.svg"
-                />
-                <input
-                  ref={logoInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e, 'logo', setUploadingLogo)}
-                  className="hidden"
-                />
-                <button 
-                  type="button"
-                  onClick={() => logoInputRef.current?.click()}
-                  disabled={uploadingLogo}
-                  className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50"
-                >
-                  {uploadingLogo ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
-                </button>
+              <label className="block text-sm text-metal-gray mb-2">Logo de la Empresa</label>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={branding.logo}
+                    onChange={(e) => setBranding({ ...branding, logo: e.target.value })}
+                    className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none text-sm"
+                    placeholder="URL del logo"
+                  />
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/svg+xml,image/webp,image/gif"
+                    onChange={(e) => handleFileUpload(e, 'logo', setUploadingLogo)}
+                    className="hidden"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => logoInputRef.current?.click()}
+                    disabled={uploadingLogo}
+                    className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50 flex items-center gap-2"
+                    title="Subir logo (máx 5MB)"
+                  >
+                    {uploadingLogo ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-xs">Subiendo...</span>
+                      </>
+                    ) : (
+                      <Upload className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                {branding.logo && (
+                  <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
+                    <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
+                    <div className="bg-white rounded p-3 flex items-center justify-center h-20">
+                      <img 
+                        src={branding.logo} 
+                        alt="Logo preview" 
+                        className="max-h-full max-w-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                          e.currentTarget.parentElement!.innerHTML += '<span class="text-red-500 text-xs">Error al cargar imagen</span>'
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm text-metal-gray mb-2">URL del Favicon</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={branding.favicon}
-                  onChange={(e) => setBranding({ ...branding, favicon: e.target.value })}
-                  className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
-                  placeholder="/favicon.ico"
-                />
-                <input
-                  ref={faviconInputRef}
-                  type="file"
-                  accept="image/*,.ico"
-                  onChange={(e) => handleFileUpload(e, 'favicon', setUploadingFavicon)}
-                  className="hidden"
-                />
-                <button 
-                  type="button"
-                  onClick={() => faviconInputRef.current?.click()}
-                  disabled={uploadingFavicon}
-                  className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50"
-                >
-                  {uploadingFavicon ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
-                </button>
+              <label className="block text-sm text-metal-gray mb-2">Favicon</label>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={branding.favicon}
+                    onChange={(e) => setBranding({ ...branding, favicon: e.target.value })}
+                    className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none text-sm"
+                    placeholder="URL del favicon"
+                  />
+                  <input
+                    ref={faviconInputRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/svg+xml,image/webp,image/gif,.ico"
+                    onChange={(e) => handleFileUpload(e, 'favicon', setUploadingFavicon)}
+                    className="hidden"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => faviconInputRef.current?.click()}
+                    disabled={uploadingFavicon}
+                    className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50 flex items-center gap-2"
+                    title="Subir favicon (máx 5MB)"
+                  >
+                    {uploadingFavicon ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-xs">Subiendo...</span>
+                      </>
+                    ) : (
+                      <Upload className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                {branding.favicon && (
+                  <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
+                    <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
+                    <div className="bg-white rounded p-3 flex items-center justify-center h-12">
+                      <img 
+                        src={branding.favicon} 
+                        alt="Favicon preview" 
+                        className="max-h-full max-w-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                          e.currentTarget.parentElement!.innerHTML += '<span class="text-red-500 text-xs">Error al cargar imagen</span>'
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

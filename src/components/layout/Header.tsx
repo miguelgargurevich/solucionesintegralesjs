@@ -15,13 +15,6 @@ interface NavItem {
   order_index: number
 }
 
-interface Branding {
-  logo: string | null
-  favicon: string | null
-  companyName: string
-  tagline: string
-}
-
 const socialIcons: Record<string, React.ElementType> = {
   linkedin: Linkedin,
   facebook: Facebook,
@@ -68,26 +61,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('inicio')
   const [navItems, setNavItems] = useState<NavItem[]>([])
-  const [branding, setBranding] = useState<Branding>({
-    logo: null,
-    favicon: null,
-    companyName: 'SOLUCIONES INTEGRALES JS S.A.C.',
-    tagline: 'Ingeniería Industrial de Excelencia'
-  })
   const { theme, toggleTheme } = useTheme()
-
-  // Cargar branding desde la API
-  useEffect(() => {
-    fetch('/api/branding')
-      .then(res => res.json())
-      .then(data => {
-        console.log('Branding data:', data)
-        if (data.success && data.branding) {
-          setBranding(data.branding)
-        }
-      })
-      .catch(err => console.error('Error loading branding:', err))
-  }, [])
 
   // Cargar items de navegación desde la API
   useEffect(() => {
@@ -190,39 +164,21 @@ export default function Header() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              {branding.logo ? (
-                // Logo desde base de datos
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative h-12 w-auto"
-                >
-                  <img 
-                    src={branding.logo} 
-                    alt={branding.companyName}
-                    className="h-full w-auto object-contain"
-                  />
-                </motion.div>
-              ) : (
-                // Fallback con iniciales
-                <>
-                  <motion.div
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-10 h-10 rounded-lg bg-gradient-to-br from-industrial-blue to-industrial-blue-dark flex items-center justify-center shadow-lg"
-                  >
-                    <span className="text-white font-bold text-lg">SI</span>
-                  </motion.div>
-                  <div className="hidden sm:block">
-                    <div className="text-white dark:text-white light:text-graphite font-display font-bold text-lg leading-tight">
-                      SOLUCIONES
-                    </div>
-                    <div className="text-industrial-blue text-xs font-medium tracking-wider">
-                      INTEGRALES JS S.A.C.
-                    </div>
-                  </div>
-                </>
-              )}
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+                className="w-10 h-10 rounded-lg bg-gradient-to-br from-industrial-blue to-industrial-blue-dark flex items-center justify-center shadow-lg"
+              >
+                <span className="text-white font-bold text-lg">SI</span>
+              </motion.div>
+              <div className="hidden sm:block">
+                <div className="text-white dark:text-white light:text-graphite font-display font-bold text-lg leading-tight">
+                  SOLUCIONES
+                </div>
+                <div className="text-industrial-blue text-xs font-medium tracking-wider">
+                  INTEGRALES JS S.A.C.
+                </div>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
