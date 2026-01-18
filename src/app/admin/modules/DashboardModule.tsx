@@ -11,6 +11,7 @@ import {
   Clock,
   Activity
 } from 'lucide-react'
+import { CMSModule } from '@/types'
 
 interface Stats {
   projects: number
@@ -19,7 +20,11 @@ interface Stats {
   published: number
 }
 
-export default function DashboardModule() {
+interface DashboardModuleProps {
+  onNavigate?: (module: CMSModule) => void
+}
+
+export default function DashboardModule({ onNavigate }: DashboardModuleProps) {
   const [stats, setStats] = useState<Stats>({
     projects: 0,
     services: 0,
@@ -176,18 +181,21 @@ export default function DashboardModule() {
             description="Añade un nuevo proyecto al portafolio"
             icon={FolderKanban}
             color="industrial-blue"
+            onClick={() => onNavigate?.('projects')}
           />
           <QuickActionCard
             title="Editar Servicios"
             description="Modifica la lista de servicios"
             icon={Settings}
             color="safety-yellow"
+            onClick={() => onNavigate?.('services')}
           />
           <QuickActionCard
             title="Gestionar Clientes"
             description="Actualiza logos de clientes"
             icon={Building2}
             color="green-500"
+            onClick={() => onNavigate?.('clients')}
           />
         </div>
       </motion.div>
@@ -212,18 +220,21 @@ function QuickActionCard({
   title, 
   description, 
   icon: Icon, 
-  color 
+  color,
+  onClick 
 }: { 
   title: string
   description: string
   icon: React.ElementType
   color: string
+  onClick?: () => void
 }) {
   return (
     <motion.button
+      onClick={onClick}
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
-      className="w-full p-4 bg-graphite rounded-xl border border-metal-gray/20 hover:border-metal-gray/40 transition-all text-left group"
+      className="w-full p-4 bg-graphite rounded-xl border border-metal-gray/20 hover:border-metal-gray/40 transition-all text-left group cursor-pointer"
     >
       <div className={`w-10 h-10 rounded-lg bg-${color}/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
         <Icon className={`w-5 h-5 text-${color}`} />

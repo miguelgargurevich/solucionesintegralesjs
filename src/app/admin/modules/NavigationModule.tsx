@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
-import { Plus, Edit2, Trash2, Save, X, GripVertical, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Edit2, Save, X, GripVertical, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { NavigationItem } from '@/types'
 import { useToast } from '@/components/ui/Toast'
 
@@ -36,50 +36,33 @@ export default function NavigationModule() {
   }
 
   const handleSave = async (itemData: Partial<NavigationItem>) => {
+    if (!editingItem) return // Solo permitir edición, no creación
+    
     setSaving(true)
     const token = localStorage.getItem('admin_token')
 
     try {
       const res = await fetch('/api/admin/navigation', {
-        method: editingItem ? 'PUT' : 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(editingItem ? { id: editingItem.id, ...itemData } : itemData)
+        body: JSON.stringify({ id: editingItem.id, ...itemData })
       })
 
       if (res.ok) {
+        showToast('success', 'Elemento actualizado')
         fetchNavigation()
         setShowForm(false)
         setEditingItem(null)
       }
     } catch (error) {
       console.error('Error:', error)
+      showToast('error', 'Error al actualizar')
     } finally {
       setSaving(false)
     }
-  }
-
-  const handleDelete = async (id: string) => {
-    showConfirm(
-      '¿Eliminar elemento?',
-      'Esta acción no se puede deshacer. El elemento se eliminará permanentemente.',
-      async () => {
-        const token = localStorage.getItem('admin_token')
-        try {
-          await fetch(`/api/admin/navigation?id=${id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-          })
-          showToast('success', 'Elemento eliminado')
-          fetchNavigation()
-        } catch (error) {
-          console.error('Error:', error)
-          showToast('error', 'Error al eliminar')
-        }
-      }
-    )
   }
 
   const toggleVisibility = async (item: NavigationItem) => {
@@ -126,17 +109,13 @@ export default function NavigationModule() {
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="bg-industrial-blue/10 border border-industrial-blue/20 rounded-xl p-4 mb-6">
         <p className="text-metal-gray">
-          Arrastra los elementos para reordenarlos. Los cambios se guardan automáticamente.
+          <strong className="text-white">Gestión de Navegación:</strong><br />
+          • Arrastra los elementos para reordenarlos<br />
+          • Haz clic en el ojo para mostrar/ocultar<br />
+          • Haz clic en el lápiz para editar el nombre
         </p>
-        <button
-          onClick={() => { setEditingItem(null); setShowForm(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-industrial-blue hover:bg-industrial-blue-light text-white rounded-lg transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Añadir</span>
-        </button>
       </div>
 
       {/* Navigation List */}
@@ -180,15 +159,9 @@ export default function NavigationModule() {
               <button
                 onClick={() => { setEditingItem(item); setShowForm(true); }}
                 className="p-2 text-metal-gray hover:text-industrial-blue transition-colors"
+                title="Editar nombre"
               >
                 <Edit2 className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="p-2 text-metal-gray hover:text-red-500 transition-colors"
-              >
-                <Trash2 className="w-5 h-5" />
               </button>
             </Reorder.Item>
           ))}
@@ -253,7 +226,7 @@ function NavigationForm({
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white">
-            {item ? 'Editar Enlace' : 'Nuevo Enlace'}
+            Editar Nombre del Enlace
           </h2>
           <button onClick={onCancel} className="p-2 hover:bg-graphite rounded-lg">
             <X className="w-5 h-5 text-metal-gray" />
@@ -262,7 +235,7 @@ function NavigationForm({
 
         <form onSubmit={(e) => { e.preventDefault(); onSave(formData); }} className="space-y-4">
           <div>
-            <label className="block text-sm text-metal-gray mb-2">Texto del Enlace</label>
+            <label className="block text-sm text-metal-gray mb-2">Nombre que aparece en el menú</label>
             <input
               type="text"
               value={formData.label}
@@ -271,40 +244,9 @@ function NavigationForm({
               placeholder="Inicio"
               required
             />
-          </div>
-
-          <div>
-            <label className="block text-sm text-metal-gray mb-2">URL / Href</label>
-            <input
-              type="text"
-              value={formData.href}
-              onChange={(e) => setFormData({ ...formData, href: e.target.value })}
-              className="w-full px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
-              placeholder="#inicio"
-              required
-            />
-          </div>
-
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.visible}
-                onChange={(e) => setFormData({ ...formData, visible: e.target.checked })}
-                className="w-5 h-5 rounded border-metal-gray/30 bg-graphite text-industrial-blue focus:ring-industrial-blue"
-              />
-              <span className="text-white">Visible</span>
-            </label>
-
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.is_cta}
-                onChange={(e) => setFormData({ ...formData, is_cta: e.target.checked })}
-                className="w-5 h-5 rounded border-metal-gray/30 bg-graphite text-industrial-blue focus:ring-industrial-blue"
-              />
-              <span className="text-white">Es CTA (botón destacado)</span>
-            </label>
+            <p className="text-xs text-metal-gray mt-2">
+              Solo puedes cambiar el nombre. La sección ({formData.href}) está vinculada a un módulo.
+            </p>
           </div>
 
           <div className="flex gap-4 pt-4">

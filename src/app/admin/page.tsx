@@ -36,7 +36,7 @@ import LoginForm from './components/LoginForm'
 
 const modules: { id: CMSModule; label: string; icon: React.ElementType; description: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, description: 'Resumen general' },
-  { id: 'branding', label: 'Branding', icon: Palette, description: 'Logo, colores y marca' },
+  { id: 'branding', label: 'Branding', icon: Palette, description: 'Logo y marca' },
   { id: 'navigation', label: 'Navegación', icon: Menu, description: 'Menú principal' },
   { id: 'hero', label: 'Hero', icon: Home, description: 'Sección principal' },
   { id: 'about', label: 'Nosotros', icon: Users, description: 'Quiénes somos' },
@@ -100,7 +100,7 @@ export default function AdminPage() {
   const renderModule = () => {
     switch (activeModule) {
       case 'dashboard':
-        return <DashboardModule />
+        return <DashboardModule onNavigate={setActiveModule} />
       case 'branding':
         return <BrandingModule />
       case 'navigation':

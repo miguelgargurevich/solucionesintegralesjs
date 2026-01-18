@@ -12,20 +12,6 @@ interface BrandingData {
   favicon: string
 }
 
-interface ColorsData {
-  primary: string
-  primaryLight: string
-  primaryDark: string
-  secondary: string
-  secondaryLight: string
-  secondaryDark: string
-  accent: string
-  background: string
-  backgroundLight: string
-  textPrimary: string
-  textSecondary: string
-}
-
 // Componente de vista previa que se actualiza correctamente
 function LogoPreview({ url, label, small = false }: { url: string; label: string; small?: boolean }) {
   const [hasError, setHasError] = useState(false)
@@ -70,19 +56,6 @@ export default function BrandingModule() {
     logo: '',
     favicon: ''
   })
-  const [colors, setColors] = useState<ColorsData>({
-    primary: '#0056A6',
-    primaryLight: '#0066CC',
-    primaryDark: '#004080',
-    secondary: '#FFB800',
-    secondaryLight: '#FFC933',
-    secondaryDark: '#CC9300',
-    accent: '#FF6B35',
-    background: '#1A1D23',
-    backgroundLight: '#22252C',
-    textPrimary: '#FFFFFF',
-    textSecondary: '#D7D8DA'
-  })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -102,9 +75,6 @@ export default function BrandingModule() {
       if (data.success && data.data) {
         if (data.data.branding) {
           setBranding(data.data.branding)
-        }
-        if (data.data.colors) {
-          setColors(data.data.colors)
         }
       }
     } catch (error) {
@@ -129,20 +99,12 @@ export default function BrandingModule() {
         body: JSON.stringify({ key: 'branding', value: branding })
       })
 
-      // Guardar colores
-      await fetch('/api/admin/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ key: 'colors', value: colors })
-      })
-
       setSaved(true)
+      showToast('success', 'Cambios guardados')
       setTimeout(() => setSaved(false), 2000)
     } catch (error) {
       console.error('Error saving:', error)
+      showToast('error', 'Error al guardar')
     } finally {
       setSaving(false)
     }
@@ -287,105 +249,11 @@ export default function BrandingModule() {
         </div>
       </motion.div>
 
-      {/* Colores */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-graphite-light rounded-2xl p-6 border border-metal-gray/20"
-      >
-        <h3 className="text-lg font-bold text-white mb-6">Paleta de Colores</h3>
-        
-        <div className="space-y-6">
-          {/* Colores Primarios */}
-          <div>
-            <h4 className="text-sm font-medium text-metal-gray mb-3">Colores Primarios</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <ColorInput 
-                label="Primary" 
-                value={colors.primary} 
-                onChange={(v) => setColors({ ...colors, primary: v })} 
-              />
-              <ColorInput 
-                label="Primary Light" 
-                value={colors.primaryLight} 
-                onChange={(v) => setColors({ ...colors, primaryLight: v })} 
-              />
-              <ColorInput 
-                label="Primary Dark" 
-                value={colors.primaryDark} 
-                onChange={(v) => setColors({ ...colors, primaryDark: v })} 
-              />
-            </div>
-          </div>
-
-          {/* Colores Secundarios */}
-          <div>
-            <h4 className="text-sm font-medium text-metal-gray mb-3">Colores Secundarios</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <ColorInput 
-                label="Secondary" 
-                value={colors.secondary} 
-                onChange={(v) => setColors({ ...colors, secondary: v })} 
-              />
-              <ColorInput 
-                label="Secondary Light" 
-                value={colors.secondaryLight} 
-                onChange={(v) => setColors({ ...colors, secondaryLight: v })} 
-              />
-              <ColorInput 
-                label="Secondary Dark" 
-                value={colors.secondaryDark} 
-                onChange={(v) => setColors({ ...colors, secondaryDark: v })} 
-              />
-            </div>
-          </div>
-
-          {/* Otros */}
-          <div>
-            <h4 className="text-sm font-medium text-metal-gray mb-3">Fondos y Textos</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <ColorInput 
-                label="Background" 
-                value={colors.background} 
-                onChange={(v) => setColors({ ...colors, background: v })} 
-              />
-              <ColorInput 
-                label="Background Light" 
-                value={colors.backgroundLight} 
-                onChange={(v) => setColors({ ...colors, backgroundLight: v })} 
-              />
-              <ColorInput 
-                label="Accent" 
-                value={colors.accent} 
-                onChange={(v) => setColors({ ...colors, accent: v })} 
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Preview */}
-        <div className="mt-6 p-4 bg-graphite rounded-xl">
-          <h4 className="text-sm font-medium text-metal-gray mb-3">Vista Previa</h4>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(colors).map(([key, value]) => (
-              <div key={key} className="flex items-center gap-2">
-                <div 
-                  className="w-8 h-8 rounded-lg shadow-md border border-white/10" 
-                  style={{ backgroundColor: value }}
-                />
-                <span className="text-xs text-metal-gray">{key}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
       {/* Botón Guardar */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.1 }}
         className="flex justify-end"
       >
         <button
@@ -403,36 +271,6 @@ export default function BrandingModule() {
           {saving ? 'Guardando...' : saved ? '¡Guardado!' : 'Guardar Cambios'}
         </button>
       </motion.div>
-    </div>
-  )
-}
-
-function ColorInput({ 
-  label, 
-  value, 
-  onChange 
-}: { 
-  label: string
-  value: string
-  onChange: (value: string) => void 
-}) {
-  return (
-    <div className="flex items-center gap-3 p-3 bg-graphite rounded-lg border border-metal-gray/20">
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-10 h-10 rounded-lg cursor-pointer border-0 bg-transparent"
-      />
-      <div className="flex-1">
-        <div className="text-sm text-white font-medium">{label}</div>
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="w-full text-xs text-metal-gray bg-transparent border-0 focus:outline-none uppercase"
-        />
-      </div>
     </div>
   )
 }
