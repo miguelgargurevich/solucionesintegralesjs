@@ -87,9 +87,7 @@ export default function BrandingModule() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
-  const [uploadingFavicon, setUploadingFavicon] = useState(false)
   const logoInputRef = useRef<HTMLInputElement>(null)
-  const faviconInputRef = useRef<HTMLInputElement>(null)
   const { showToast } = useToast()
 
   useEffect(() => {
@@ -248,83 +246,42 @@ export default function BrandingModule() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-metal-gray mb-2">Logo de la Empresa</label>
-              <div className="space-y-3">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={branding.logo}
-                    onChange={(e) => setBranding({ ...branding, logo: e.target.value })}
-                    className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none text-sm"
-                    placeholder="URL del logo"
-                  />
-                  <input
-                    ref={logoInputRef}
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/svg+xml,image/webp,image/gif"
-                    onChange={(e) => handleFileUpload(e, 'logo', setUploadingLogo)}
-                    className="hidden"
-                  />
-                  <button 
-                    type="button"
-                    onClick={() => logoInputRef.current?.click()}
-                    disabled={uploadingLogo}
-                    className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50 flex items-center gap-2"
-                    title="Subir logo (máx 5MB)"
-                  >
-                    {uploadingLogo ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-xs">Subiendo...</span>
-                      </>
-                    ) : (
-                      <Upload className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-                <LogoPreview url={branding.logo} label="Logo" />
+          <div>
+            <label className="block text-sm text-metal-gray mb-2">Logo de la Empresa</label>
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={branding.logo}
+                  onChange={(e) => setBranding({ ...branding, logo: e.target.value })}
+                  className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none text-sm"
+                  placeholder="URL del logo"
+                />
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/svg+xml,image/webp,image/gif"
+                  onChange={(e) => handleFileUpload(e, 'logo', setUploadingLogo)}
+                  className="hidden"
+                />
+                <button 
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  title="Subir logo (máx 5MB)"
+                >
+                  {uploadingLogo ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span className="text-xs">Subiendo...</span>
+                    </>
+                  ) : (
+                    <Upload className="w-5 h-5" />
+                  )}
+                </button>
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm text-metal-gray mb-2">Favicon</label>
-              <div className="space-y-3">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={branding.favicon}
-                    onChange={(e) => setBranding({ ...branding, favicon: e.target.value })}
-                    className="flex-1 px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none text-sm"
-                    placeholder="URL del favicon"
-                  />
-                  <input
-                    ref={faviconInputRef}
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/svg+xml,image/webp,image/gif,.ico"
-                    onChange={(e) => handleFileUpload(e, 'favicon', setUploadingFavicon)}
-                    className="hidden"
-                  />
-                  <button 
-                    type="button"
-                    onClick={() => faviconInputRef.current?.click()}
-                    disabled={uploadingFavicon}
-                    className="px-4 py-3 bg-industrial-blue/20 text-industrial-blue rounded-lg hover:bg-industrial-blue/30 transition-colors disabled:opacity-50 flex items-center gap-2"
-                    title="Subir favicon (máx 5MB)"
-                  >
-                    {uploadingFavicon ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-xs">Subiendo...</span>
-                      </>
-                    ) : (
-                      <Upload className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-                <LogoPreview url={branding.favicon} label="Favicon" small />
-              </div>
+              <LogoPreview url={branding.logo} label="Logo" />
             </div>
           </div>
         </div>
