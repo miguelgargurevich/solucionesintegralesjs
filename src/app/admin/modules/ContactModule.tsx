@@ -13,6 +13,13 @@ interface ContactData {
     lat: number
     lng: number
   }
+  schedule?: {
+    weekdays: string
+    weekdaysHours: string
+    saturday: string
+    saturdayHours: string
+    emergency: string
+  }
 }
 
 interface SocialMediaData {
@@ -29,7 +36,14 @@ export default function ContactModule() {
     email: '',
     address: '',
     ruc: '',
-    coordinates: { lat: -12.1328, lng: -76.9908 }
+    coordinates: { lat: -12.1328, lng: -76.9908 },
+    schedule: {
+      weekdays: 'Lunes - Viernes',
+      weekdaysHours: '8:00 AM - 6:00 PM',
+      saturday: 'Sábados',
+      saturdayHours: '9:00 AM - 1:00 PM',
+      emergency: 'Emergencias 24/7'
+    }
   })
   const [social, setSocial] = useState<SocialMediaData>({
     linkedin: '',
@@ -165,11 +179,100 @@ export default function ContactModule() {
         </div>
       </motion.div>
 
-      {/* Coordenadas del Mapa */}
+      {/* Horario de Atención */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
+        className="bg-graphite-light rounded-2xl p-6 border border-metal-gray/20"
+      >
+        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+          <svg className="w-5 h-5 text-industrial-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Horario de Atención
+        </h3>
+        
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-metal-gray mb-2">Días de Semana</label>
+              <input
+                type="text"
+                value={contact.schedule?.weekdays || ''}
+                onChange={(e) => setContact({ 
+                  ...contact, 
+                  schedule: { ...contact.schedule!, weekdays: e.target.value }
+                })}
+                className="w-full px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
+                placeholder="Lunes - Viernes"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-metal-gray mb-2">Horario</label>
+              <input
+                type="text"
+                value={contact.schedule?.weekdaysHours || ''}
+                onChange={(e) => setContact({ 
+                  ...contact, 
+                  schedule: { ...contact.schedule!, weekdaysHours: e.target.value }
+                })}
+                className="w-full px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
+                placeholder="8:00 AM - 6:00 PM"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-metal-gray mb-2">Sábados</label>
+              <input
+                type="text"
+                value={contact.schedule?.saturday || ''}
+                onChange={(e) => setContact({ 
+                  ...contact, 
+                  schedule: { ...contact.schedule!, saturday: e.target.value }
+                })}
+                className="w-full px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
+                placeholder="Sábados"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-metal-gray mb-2">Horario Sábados</label>
+              <input
+                type="text"
+                value={contact.schedule?.saturdayHours || ''}
+                onChange={(e) => setContact({ 
+                  ...contact, 
+                  schedule: { ...contact.schedule!, saturdayHours: e.target.value }
+                })}
+                className="w-full px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
+                placeholder="9:00 AM - 1:00 PM"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm text-metal-gray mb-2">Disponibilidad Emergencias</label>
+            <input
+              type="text"
+              value={contact.schedule?.emergency || ''}
+              onChange={(e) => setContact({ 
+                ...contact, 
+                schedule: { ...contact.schedule!, emergency: e.target.value }
+              })}
+              className="w-full px-4 py-3 bg-graphite border border-metal-gray/30 rounded-lg text-white focus:border-industrial-blue focus:outline-none"
+              placeholder="Emergencias 24/7"
+            />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Coordenadas del Mapa */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         className="bg-graphite-light rounded-2xl p-6 border border-metal-gray/20"
       >
         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
@@ -241,7 +344,7 @@ export default function ContactModule() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.3 }}
         className="bg-graphite-light rounded-2xl p-6 border border-metal-gray/20"
       >
         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
@@ -307,7 +410,7 @@ export default function ContactModule() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.4 }}
         className="flex justify-end"
       >
         <button
