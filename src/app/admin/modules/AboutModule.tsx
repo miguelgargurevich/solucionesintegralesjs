@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { AboutContent, AboutStat } from '@/types'
 import Modal, { ModalFooter, FormField, FormInput } from '../components/Modal'
+import { useToast } from '@/components/ui/Toast'
 
 // Mapa de iconos disponibles para estadísticas
 const iconMap: Record<string, LucideIcon> = {
@@ -39,6 +40,7 @@ export default function AboutModule() {
   const [saved, setSaved] = useState(false)
   const [editingStat, setEditingStat] = useState<AboutStat | null>(null)
   const [showStatForm, setShowStatForm] = useState(false)
+  const { showToast, showConfirm } = useToast()
 
   useEffect(() => {
     fetchData()
@@ -117,18 +119,24 @@ export default function AboutModule() {
   }
 
   const handleDeleteStat = async (id: string) => {
-    if (!confirm('¿Eliminar esta estadística?')) return
-    const token = localStorage.getItem('admin_token')
-
-    try {
-      await fetch(`/api/admin/about?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      fetchData()
-    } catch (error) {
-      console.error('Error:', error)
-    }
+    showConfirm(
+      '¿Eliminar estadística?',
+      'Esta acción no se puede deshacer.',
+      async () => {
+        const token = localStorage.getItem('admin_token')
+        try {
+          await fetch(`/api/admin/about?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          showToast('success', 'Estadística eliminada')
+          fetchData()
+        } catch (error) {
+          console.error('Error:', error)
+          showToast('error', 'Error al eliminar')
+        }
+      }
+    )
   }
 
   if (loading) {

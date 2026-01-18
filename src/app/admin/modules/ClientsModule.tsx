@@ -6,6 +6,7 @@ import { Plus, Edit2, Trash2, Save, Eye, EyeOff, Star, StarOff, Upload, Users, L
 import { CMSClient } from '@/types'
 import Image from 'next/image'
 import Modal, { ModalFooter, FormField, FormInput } from '../components/Modal'
+import { useToast } from '@/components/ui/Toast'
 
 export default function ClientsModule() {
   const [clients, setClients] = useState<CMSClient[]>([])
@@ -13,6 +14,7 @@ export default function ClientsModule() {
   const [showForm, setShowForm] = useState(false)
   const [editingClient, setEditingClient] = useState<CMSClient | null>(null)
   const [saving, setSaving] = useState(false)
+  const { showToast, showConfirm } = useToast()
 
   useEffect(() => {
     fetchClients()
@@ -62,18 +64,24 @@ export default function ClientsModule() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este cliente?')) return
-
-    const token = localStorage.getItem('admin_token')
-    try {
-      await fetch(`/api/admin/clients?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      fetchClients()
-    } catch (error) {
-      console.error('Error:', error)
-    }
+    showConfirm(
+      '¿Eliminar cliente?',
+      'Esta acción no se puede deshacer. El cliente se eliminará permanentemente.',
+      async () => {
+        const token = localStorage.getItem('admin_token')
+        try {
+          await fetch(`/api/admin/clients?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          showToast('success', 'Cliente eliminado')
+          fetchClients()
+        } catch (error) {
+          console.error('Error:', error)
+          showToast('error', 'Error al eliminar')
+        }
+      }
+    )
   }
 
   const toggleVisibility = async (client: CMSClient) => {
@@ -307,11 +315,10 @@ function ClientFormModal({
       if (data.success && data.url) {
         setFormData(prev => ({ ...prev, logo: data.url }))
       } else {
-        alert(data.error || 'Error al subir imagen')
+        console.error('Error:', data.error || 'Error al subir imagen')
       }
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Error al subir imagen')
     } finally {
       setUploading(false)
       if (fileInputRef.current) {

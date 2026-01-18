@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { Plus, Edit2, Trash2, Save, X, GripVertical, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { NavigationItem } from '@/types'
+import { useToast } from '@/components/ui/Toast'
 
 export default function NavigationModule() {
   const [items, setItems] = useState<NavigationItem[]>([])
@@ -11,6 +12,7 @@ export default function NavigationModule() {
   const [showForm, setShowForm] = useState(false)
   const [editingItem, setEditingItem] = useState<NavigationItem | null>(null)
   const [saving, setSaving] = useState(false)
+  const { showToast, showConfirm } = useToast()
 
   useEffect(() => {
     fetchNavigation()
@@ -60,18 +62,24 @@ export default function NavigationModule() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este elemento?')) return
-
-    const token = localStorage.getItem('admin_token')
-    try {
-      await fetch(`/api/admin/navigation?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      fetchNavigation()
-    } catch (error) {
-      console.error('Error:', error)
-    }
+    showConfirm(
+      '¿Eliminar elemento?',
+      'Esta acción no se puede deshacer. El elemento se eliminará permanentemente.',
+      async () => {
+        const token = localStorage.getItem('admin_token')
+        try {
+          await fetch(`/api/admin/navigation?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          showToast('success', 'Elemento eliminado')
+          fetchNavigation()
+        } catch (error) {
+          console.error('Error:', error)
+          showToast('error', 'Error al eliminar')
+        }
+      }
+    )
   }
 
   const toggleVisibility = async (item: NavigationItem) => {

@@ -61,6 +61,8 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('inicio')
   const [navItems, setNavItems] = useState<NavItem[]>([])
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState(false)
   const { theme, toggleTheme } = useTheme()
 
   // Cargar items de navegación desde la API
@@ -76,6 +78,18 @@ export default function Header() {
         }
       })
       .catch(err => console.error('Error loading navigation:', err))
+  }, [])
+
+  // Cargar logo desde settings de branding
+  useEffect(() => {
+    fetch('/api/admin/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data?.branding?.logo) {
+          setLogoUrl(data.data.branding.logo)
+        }
+      })
+      .catch(err => console.error('Error loading branding:', err))
   }, [])
 
   useEffect(() => {
@@ -167,9 +181,20 @@ export default function Header() {
               <motion.div
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
-                className="w-10 h-10 rounded-lg bg-gradient-to-br from-industrial-blue to-industrial-blue-dark flex items-center justify-center shadow-lg"
+                className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shadow-lg"
               >
-                <span className="text-white font-bold text-lg">SI</span>
+                {logoUrl && !logoError ? (
+                  <img 
+                    src={logoUrl} 
+                    alt="Logo"
+                    className="w-full h-full object-contain"
+                    onError={() => setLogoError(true)}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-industrial-blue to-industrial-blue-dark flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">SI</span>
+                  </div>
+                )}
               </motion.div>
               <div className="hidden sm:block">
                 <div className="text-white dark:text-white light:text-graphite font-display font-bold text-lg leading-tight">

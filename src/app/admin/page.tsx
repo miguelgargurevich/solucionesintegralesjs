@@ -19,6 +19,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { CMSModule } from '@/types'
+import { ToastProvider } from '@/components/ui/Toast'
 
 // Importar módulos
 import DashboardModule from './modules/DashboardModule'
@@ -125,6 +126,7 @@ export default function AdminPage() {
   }
 
   return (
+    <ToastProvider>
     <div className="min-h-screen bg-graphite flex">
       {/* Sidebar */}
       <motion.aside
@@ -287,5 +289,6 @@ export default function AdminPage() {
         </div>
       </motion.main>
     </div>
+    </ToastProvider>
   )
 }

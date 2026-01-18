@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Save, Upload, Loader2, Check } from 'lucide-react'
+import { useToast } from '@/components/ui/Toast'
 
 interface BrandingData {
   companyName: string
@@ -23,6 +24,43 @@ interface ColorsData {
   backgroundLight: string
   textPrimary: string
   textSecondary: string
+}
+
+// Componente de vista previa que se actualiza correctamente
+function LogoPreview({ url, label, small = false }: { url: string; label: string; small?: boolean }) {
+  const [hasError, setHasError] = useState(false)
+  const [imageKey, setImageKey] = useState(0)
+  
+  // Cuando cambia la URL, resetear el estado de error y forzar recarga
+  useEffect(() => {
+    setHasError(false)
+    setImageKey(prev => prev + 1)
+  }, [url])
+  
+  const containerHeight = small ? 'h-12' : 'h-20'
+  const iconSize = small ? 'w-8 h-8' : 'w-full h-full'
+  const textSize = small ? 'text-xs' : 'text-2xl'
+  
+  return (
+    <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
+      <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
+      <div className={`bg-white rounded p-3 flex items-center justify-center ${containerHeight}`}>
+        {url && !hasError ? (
+          <img 
+            key={imageKey}
+            src={url}
+            alt={`${label} preview`}
+            className="max-h-full max-w-full object-contain"
+            onError={() => setHasError(true)}
+          />
+        ) : (
+          <div className={`flex items-center justify-center ${iconSize} bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded`}>
+            <span className={`text-white font-bold ${textSize}`}>SI</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default function BrandingModule() {
@@ -52,6 +90,7 @@ export default function BrandingModule() {
   const [uploadingFavicon, setUploadingFavicon] = useState(false)
   const logoInputRef = useRef<HTMLInputElement>(null)
   const faviconInputRef = useRef<HTMLInputElement>(null)
+  const { showToast } = useToast()
 
   useEffect(() => {
     fetchSettings()
@@ -122,7 +161,7 @@ export default function BrandingModule() {
     // Validar tamaño antes de subir (5MB máximo)
     const maxSize = 5 * 1024 * 1024 // 5MB
     if (file.size > maxSize) {
-      alert(`El archivo es demasiado grande. Máximo 5MB. Tamaño actual: ${(file.size / 1024 / 1024).toFixed(2)}MB`)
+      showToast('error', 'Archivo muy grande', `Máximo 5MB. Tamaño: ${(file.size / 1024 / 1024).toFixed(2)}MB`)
       e.target.value = '' // Limpiar input
       return
     }
@@ -130,7 +169,7 @@ export default function BrandingModule() {
     // Validar tipo de archivo
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif']
     if (!allowedTypes.includes(file.type)) {
-      alert(`Tipo de archivo no permitido. Usa: JPG, PNG, SVG, WEBP o GIF`)
+      showToast('error', 'Tipo no permitido', 'Usa: JPG, PNG, SVG, WEBP o GIF')
       e.target.value = '' // Limpiar input
       return
     }
@@ -155,13 +194,13 @@ export default function BrandingModule() {
       
       if (data.success && data.url) {
         setBranding(prev => ({ ...prev, [field]: data.url }))
-        alert(`✓ ${field === 'logo' ? 'Logo' : 'Favicon'} subido exitosamente`)
+        showToast('success', `${field === 'logo' ? 'Logo' : 'Favicon'} subido`, 'La imagen se actualizó correctamente')
       } else {
-        alert(data.error || 'Error al subir imagen')
+        showToast('error', 'Error al subir', data.error || 'No se pudo subir la imagen')
       }
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Error al subir imagen. Revisa la consola para más detalles.')
+      showToast('error', 'Error de conexión', 'Revisa la consola para más detalles')
     } finally {
       setUploading(false)
       e.target.value = '' // Limpiar input para permitir re-upload del mismo archivo
@@ -245,27 +284,7 @@ export default function BrandingModule() {
                     )}
                   </button>
                 </div>
-                <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
-                  <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
-                  <div className="bg-white rounded p-3 flex items-center justify-center h-20">
-                    {branding.logo ? (
-                      <img 
-                        src={branding.logo} 
-                        alt="Logo preview" 
-                        className="max-h-full max-w-full object-contain"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                          const parent = e.currentTarget.parentElement!
-                          parent.innerHTML = '<div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded"><span class="text-white font-bold text-2xl">SI</span></div>'
-                        }}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded">
-                        <span className="text-white font-bold text-2xl">SI</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <LogoPreview url={branding.logo} label="Logo" />
               </div>
             </div>
 
@@ -304,27 +323,7 @@ export default function BrandingModule() {
                     )}
                   </button>
                 </div>
-                <div className="p-3 bg-graphite rounded-lg border border-metal-gray/20">
-                  <p className="text-xs text-metal-gray mb-2">Vista previa:</p>
-                  <div className="bg-white rounded p-3 flex items-center justify-center h-12">
-                    {branding.favicon ? (
-                      <img 
-                        src={branding.favicon} 
-                        alt="Favicon preview" 
-                        className="max-h-full max-w-full object-contain"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                          const parent = e.currentTarget.parentElement!
-                          parent.innerHTML = '<div class="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded"><span class="text-white font-bold text-xs">SI</span></div>'
-                        }}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-industrial-blue to-industrial-blue-light rounded">
-                        <span className="text-white font-bold text-xs">SI</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <LogoPreview url={branding.favicon} label="Favicon" small />
               </div>
             </div>
           </div>

@@ -19,6 +19,7 @@ import {
   Loader2
 } from 'lucide-react'
 import Image from 'next/image'
+import { useToast } from '@/components/ui/Toast'
 
 interface Project {
   id: string
@@ -55,6 +56,7 @@ export default function ProjectsModule() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | undefined>()
+  const { showToast, showConfirm } = useToast()
 
   useEffect(() => {
     fetchProjects()
@@ -98,21 +100,27 @@ export default function ProjectsModule() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Estás seguro de eliminar este proyecto?')) return
-    
-    try {
-      await fetch('/api/admin/projects', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
-        },
-        body: JSON.stringify({ id }),
-      })
-      fetchProjects()
-    } catch (error) {
-      console.error('Error deleting:', error)
-    }
+    showConfirm(
+      '¿Eliminar proyecto?',
+      'Esta acción no se puede deshacer. El proyecto y sus imágenes se eliminarán permanentemente.',
+      async () => {
+        try {
+          await fetch('/api/admin/projects', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
+            },
+            body: JSON.stringify({ id }),
+          })
+          showToast('success', 'Proyecto eliminado')
+          fetchProjects()
+        } catch (error) {
+          console.error('Error deleting:', error)
+          showToast('error', 'Error al eliminar')
+        }
+      }
+    )
   }
 
   const togglePublished = async (project: Project) => {

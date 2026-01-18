@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Edit2, Trash2, Save, X, Eye, EyeOff, ExternalLink, Loader2 } from 'lucide-react'
 import { FooterLink } from '@/types'
+import { useToast } from '@/components/ui/Toast'
 
 export default function FooterModule() {
   const [links, setLinks] = useState<{
@@ -15,6 +16,7 @@ export default function FooterModule() {
   const [showForm, setShowForm] = useState(false)
   const [editingLink, setEditingLink] = useState<FooterLink | null>(null)
   const [saving, setSaving] = useState(false)
+  const { showToast, showConfirm } = useToast()
 
   useEffect(() => {
     fetchLinks()
@@ -64,18 +66,24 @@ export default function FooterModule() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este enlace?')) return
-
-    const token = localStorage.getItem('admin_token')
-    try {
-      await fetch(`/api/admin/footer?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      fetchLinks()
-    } catch (error) {
-      console.error('Error:', error)
-    }
+    showConfirm(
+      '¿Eliminar enlace?',
+      'Esta acción no se puede deshacer.',
+      async () => {
+        const token = localStorage.getItem('admin_token')
+        try {
+          await fetch(`/api/admin/footer?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          showToast('success', 'Enlace eliminado')
+          fetchLinks()
+        } catch (error) {
+          console.error('Error:', error)
+          showToast('error', 'Error al eliminar')
+        }
+      }
+    )
   }
 
   const toggleVisibility = async (link: FooterLink) => {

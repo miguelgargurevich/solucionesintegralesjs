@@ -5,6 +5,7 @@ import { motion, Reorder } from 'framer-motion'
 import { Plus, Edit2, Trash2, Save, X, Eye, EyeOff, Loader2, GripVertical, Wrench } from 'lucide-react'
 import { CMSService } from '@/types'
 import Modal, { ModalFooter, FormField, FormInput, FormTextarea, FormSelect } from '../components/Modal'
+import { useToast } from '@/components/ui/Toast'
 
 const ICONS = [
   'building', 'pipe', 'alert-triangle', 'hard-hat', 'cog', 
@@ -17,6 +18,7 @@ export default function ServicesModule() {
   const [showForm, setShowForm] = useState(false)
   const [editingService, setEditingService] = useState<CMSService | null>(null)
   const [saving, setSaving] = useState(false)
+  const { showToast, showConfirm } = useToast()
 
   useEffect(() => {
     fetchServices()
@@ -66,18 +68,24 @@ export default function ServicesModule() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este servicio?')) return
-
-    const token = localStorage.getItem('admin_token')
-    try {
-      await fetch(`/api/admin/services?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      fetchServices()
-    } catch (error) {
-      console.error('Error:', error)
-    }
+    showConfirm(
+      '¿Eliminar servicio?',
+      'Esta acción no se puede deshacer. El servicio se eliminará permanentemente.',
+      async () => {
+        const token = localStorage.getItem('admin_token')
+        try {
+          await fetch(`/api/admin/services?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          showToast('success', 'Servicio eliminado')
+          fetchServices()
+        } catch (error) {
+          console.error('Error:', error)
+          showToast('error', 'Error al eliminar')
+        }
+      }
+    )
   }
 
   const toggleVisibility = async (service: CMSService) => {
