@@ -154,7 +154,25 @@ export default function BrandingModule() {
       
       if (data.success && data.url) {
         setBranding(prev => ({ ...prev, [field]: data.url }))
-        showToast('success', `${field === 'logo' ? 'Logo' : 'Favicon'} subido`, 'La imagen se actualizó correctamente')
+        
+        // Guardar automáticamente en la base de datos
+        const updatedBranding = { ...branding, [field]: data.url }
+        const saveRes = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ key: 'branding', value: updatedBranding })
+        })
+        
+        if (saveRes.ok) {
+          showToast('success', `${field === 'logo' ? 'Logo' : 'Favicon'} actualizado`, 'Los cambios se guardaron correctamente')
+          // Disparar evento personalizado para notificar a otros componentes
+          window.dispatchEvent(new CustomEvent('brandingUpdated', { detail: { logo: data.url } }))
+        } else {
+          showToast('warning', 'Imagen subida', 'Recuerda guardar los cambios')
+        }
       } else {
         showToast('error', 'Error al subir', data.error || 'No se pudo subir la imagen')
       }

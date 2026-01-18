@@ -49,7 +49,10 @@ export async function PUT(request: NextRequest) {
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from('site_settings')
-      .upsert({ key, value, updated_at: new Date().toISOString() })
+      .upsert(
+        { key, value, updated_at: new Date().toISOString() },
+        { onConflict: 'key' }
+      )
       .select()
       .single()
 

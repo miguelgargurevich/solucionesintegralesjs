@@ -98,14 +98,33 @@ export default function Header() {
 
   // Cargar logo desde settings de branding
   useEffect(() => {
-    fetch('/api/admin/settings')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.data?.branding?.logo) {
-          setLogoUrl(data.data.branding.logo)
-        }
-      })
-      .catch(err => console.error('Error loading branding:', err))
+    const loadLogo = () => {
+      fetch('/api/admin/settings')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data?.branding?.logo) {
+            setLogoUrl(data.data.branding.logo)
+            setLogoError(false)
+          }
+        })
+        .catch(err => console.error('Error loading branding:', err))
+    }
+    
+    loadLogo()
+    
+    // Escuchar eventos de actualización de branding
+    const handleBrandingUpdate = (e: CustomEvent) => {
+      if (e.detail?.logo) {
+        setLogoUrl(e.detail.logo)
+        setLogoError(false)
+      }
+    }
+    
+    window.addEventListener('brandingUpdated', handleBrandingUpdate as EventListener)
+    
+    return () => {
+      window.removeEventListener('brandingUpdated', handleBrandingUpdate as EventListener)
+    }
   }, [])
 
   useEffect(() => {
