@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -11,7 +12,26 @@ import {
   Instagram,
   ArrowUp
 } from 'lucide-react'
-import { companyInfo, services } from '@/lib/data'
+import { companyInfo } from '@/lib/data'
+import { FooterLink } from '@/types'
+
+interface ContactData {
+  phone: string
+  email: string
+  address: string
+  ruc: string
+  coordinates: {
+    lat: number
+    lng: number
+  }
+  schedule?: {
+    weekdays: string
+    weekdaysHours: string
+    saturday: string
+    saturdayHours: string
+    emergency: string
+  }
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -38,6 +58,42 @@ const itemVariants = {
 }
 
 export default function Footer() {
+  const [footerLinks, setFooterLinks] = useState<{
+    servicios: FooterLink[]
+    empresa: FooterLink[]
+    legal: FooterLink[]
+  }>({ servicios: [], empresa: [], legal: [] })
+
+  const [contactInfo, setContactInfo] = useState<ContactData>({
+    phone: '',
+    email: '',
+    address: '',
+    ruc: '',
+    coordinates: { lat: -12.1328, lng: -76.9908 }
+  })
+
+  useEffect(() => {
+    // Cargar links del footer desde la API
+    fetch('/api/admin/footer')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setFooterLinks(data.data)
+        }
+      })
+      .catch(err => console.error('Error loading footer links:', err))
+
+    // Cargar información de contacto desde la API
+    fetch('/api/admin/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data && data.data.contact) {
+          setContactInfo(data.data.contact)
+        }
+      })
+      .catch(err => console.error('Error loading contact info:', err))
+  }, [])
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -87,7 +143,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm leading-relaxed mb-6">
-              {companyInfo.tagline}. Más de 15 años transformando la industria peruana con soluciones de ingeniería de primer nivel.
+              Soluciones integrales en ingeniería industrial. Más de 15 años transformando la industria peruana con soluciones de ingeniería de primer nivel.
             </p>
             {/* Social links */}
             <div className="flex items-center gap-3">
@@ -117,44 +173,42 @@ export default function Footer() {
               <span className="absolute -bottom-1 left-0 w-8 h-0.5 bg-industrial-blue" />
             </h4>
             <ul className="space-y-3">
-              {services.slice(0, 6).map((service) => (
-                <li key={service.id}>
-                  <Link
-                    href="#servicios"
-                    className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm hover:text-white dark:hover:text-white light:hover:text-graphite hover:translate-x-2 transition-all inline-flex items-center gap-2"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-industrial-blue/50" />
-                    {service.title}
-                  </Link>
-                </li>
-              ))}
+              {footerLinks.servicios
+                .filter(link => link.visible)
+                .map((link) => (
+                  <li key={link.id}>
+                    <Link
+                      href={link.href}
+                      className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm hover:text-white dark:hover:text-white light:hover:text-graphite hover:translate-x-2 transition-all inline-flex items-center gap-2"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-industrial-blue/50" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </motion.div>
 
-          {/* Quick Links */}
+          {/* Quick Links (Empresa) */}
           <motion.div variants={itemVariants}>
             <h4 className="text-white dark:text-white light:text-graphite font-bold mb-6 relative inline-block">
-              Enlaces Rápidos
+              Empresa
               <span className="absolute -bottom-1 left-0 w-8 h-0.5 bg-safety-yellow" />
             </h4>
             <ul className="space-y-3">
-              {[
-                { label: 'Sobre Nosotros', href: '#nosotros' },
-                { label: 'Nuestros Proyectos', href: '#proyectos' },
-                { label: 'Clientes', href: '#clientes' },
-                { label: 'Contacto', href: '#contacto' },
-                { label: 'Solicitar Cotización', href: '#contacto' },
-              ].map((link, index) => (
-                <li key={index}>
-                  <Link
-                    href={link.href}
-                    className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm hover:text-white dark:hover:text-white light:hover:text-graphite hover:translate-x-2 transition-all inline-flex items-center gap-2"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-safety-yellow/50" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {footerLinks.empresa
+                .filter(link => link.visible)
+                .map((link) => (
+                  <li key={link.id}>
+                    <Link
+                      href={link.href}
+                      className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm hover:text-white dark:hover:text-white light:hover:text-graphite hover:translate-x-2 transition-all inline-flex items-center gap-2"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-safety-yellow/50" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </motion.div>
 
@@ -167,7 +221,7 @@ export default function Footer() {
             <ul className="space-y-4">
               <li>
                 <a
-                  href={`tel:${companyInfo.phone}`}
+                  href={`tel:${contactInfo.phone}`}
                   className="flex items-start gap-3 text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-industrial-blue/10 flex items-center justify-center flex-shrink-0 group-hover:bg-industrial-blue/20 transition-colors">
@@ -175,13 +229,13 @@ export default function Footer() {
                   </div>
                   <div>
                     <div className="text-xs text-metal-gray-dark dark:text-metal-gray-dark light:text-gray-500">Teléfono</div>
-                    <div className="text-sm">{companyInfo.phone}</div>
+                    <div className="text-sm">{contactInfo.phone}</div>
                   </div>
                 </a>
               </li>
               <li>
                 <a
-                  href={`mailto:${companyInfo.email}`}
+                  href={`mailto:${contactInfo.email}`}
                   className="flex items-start gap-3 text-metal-gray dark:text-metal-gray light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-industrial-blue/10 flex items-center justify-center flex-shrink-0 group-hover:bg-industrial-blue/20 transition-colors">
@@ -189,7 +243,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <div className="text-xs text-metal-gray-dark dark:text-metal-gray-dark light:text-gray-500">Email</div>
-                    <div className="text-sm">{companyInfo.email}</div>
+                    <div className="text-sm">{contactInfo.email}</div>
                   </div>
                 </a>
               </li>
@@ -200,7 +254,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <div className="text-xs text-metal-gray-dark dark:text-metal-gray-dark light:text-gray-500">Dirección</div>
-                    <div className="text-sm">{companyInfo.address}</div>
+                    <div className="text-sm">{contactInfo.address}</div>
                   </div>
                 </div>
               </li>
@@ -212,12 +266,26 @@ export default function Footer() {
         <div className="border-t border-metal-gray/10 dark:border-metal-gray/10 light:border-gray-200 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} {companyInfo.name}. Todos los derechos reservados.
+              © {new Date().getFullYear()} INTEGRALES JS S.A.C. Todos los derechos reservados.
             </div>
-            <div className="flex items-center gap-4 text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm">
-              <span>RUC: {companyInfo.ruc}</span>
-              <span className="w-1 h-1 rounded-full bg-metal-gray/30" />
-              <span>Lima, Perú</span>
+            <div className="flex items-center gap-4 text-metal-gray dark:text-metal-gray light:text-gray-600 text-sm flex-wrap justify-center">
+              {footerLinks.legal
+                .filter(link => link.visible)
+                .map((link, index) => (
+                  <span key={link.id} className="flex items-center gap-4">
+                    {index > 0 && <span className="w-1 h-1 rounded-full bg-metal-gray/30" />}
+                    <Link 
+                      href={link.href}
+                      className="hover:text-white dark:hover:text-white light:hover:text-graphite transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </span>
+                ))}
+              {footerLinks.legal.filter(l => l.visible).length > 0 && (
+                <span className="w-1 h-1 rounded-full bg-metal-gray/30" />
+              )}
+              <span>RUC: {contactInfo.ruc}</span>
             </div>
           </div>
         </div>
