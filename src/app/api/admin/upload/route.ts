@@ -33,6 +33,15 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const file = formData.get('file') as File
     const folder = (formData.get('folder') as string) || 'uploads'
+
+    console.log('[admin/upload] incoming file', {
+      folder,
+      name: file?.name,
+      type: file?.type,
+      size: file?.size,
+      storageProvider: process.env.STORAGE_PROVIDER,
+      hasR2PublicUrl: Boolean(process.env.R2_PUBLIC_URL),
+    })
     
     if (!file) {
       return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 })
@@ -65,6 +74,19 @@ export async function POST(request: NextRequest) {
     if (!url) {
       throw new Error('Error uploading to storage')
     }
+
+    console.log('[admin/upload] upload success', {
+      fileName,
+      folder,
+      url,
+      urlHost: (() => {
+        try {
+          return new URL(url).host
+        } catch {
+          return null
+        }
+      })(),
+    })
 
     return NextResponse.json({ url, success: true })
   } catch (error) {
