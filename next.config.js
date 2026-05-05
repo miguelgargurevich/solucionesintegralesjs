@@ -1,4 +1,24 @@
 /** @type {import('next').NextConfig} */
+const r2PublicUrl = process.env.R2_PUBLIC_URL || ''
+
+const r2RemotePattern = (() => {
+  if (!r2PublicUrl) {
+    return null
+  }
+
+  try {
+    const parsed = new URL(r2PublicUrl)
+    return {
+      protocol: parsed.protocol.replace(':', ''),
+      hostname: parsed.hostname,
+      ...(parsed.port ? { port: parsed.port } : {}),
+      pathname: '/**',
+    }
+  } catch {
+    return null
+  }
+})()
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -18,26 +38,13 @@ const nextConfig = {
         hostname: 'cdn.sanity.io',
         pathname: '/**',
       },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '9000',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http',
-        hostname: '127.0.0.1',
-        port: '9000',
-        pathname: '/**',
-      },
+      ...(r2RemotePattern ? [r2RemotePattern] : []),
     ],
     unoptimized: true,
   },
   transpilePackages: ['three'],
-  
-  // Ignorar errores de TypeScript en build para desarrollo
+
   typescript: {
-    // Temporal: permitir build aunque haya errores de tipos
     ignoreBuildErrors: false,
   },
 }
