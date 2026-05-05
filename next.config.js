@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const r2PublicUrl = process.env.R2_PUBLIC_URL || ''
+const knownR2PublicHost = 'pub-bda40c407bfa46509c3a0aa7e7223a73.r2.dev'
 
 const r2RemotePattern = (() => {
   if (!r2PublicUrl) {
@@ -40,12 +41,17 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '*.r2.dev',
+        hostname: '**.r2.dev',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: '*.r2.cloudflarestorage.com',
+        hostname: '**.r2.cloudflarestorage.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: knownR2PublicHost,
         pathname: '/**',
       },
       ...(r2RemotePattern ? [r2RemotePattern] : []),
