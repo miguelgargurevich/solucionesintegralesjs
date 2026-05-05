@@ -1,15 +1,15 @@
 # robots.txt para SOLUCIONES INTEGRALES JS S.A.C.
-# https://solucionesintegralesjs.com
+# https://solucionesintegralesjs.gargurevich.com
 
 # Permitir todos los robots
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://solucionesintegralesjs.com/sitemap.xml
+Sitemap: https://solucionesintegralesjs.gargurevich.com/sitemap.xml
 
 # Archivo para IA/LLMs
-# https://solucionesintegralesjs.com/llms.txt
+# https://solucionesintegralesjs.gargurevich.com/llms.txt
 
 # Googlebot
 User-agent: Googlebot

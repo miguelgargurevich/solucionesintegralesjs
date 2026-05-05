@@ -71,8 +71,8 @@ Hemos trabajado con las principales empresas industriales del Perú:
 - **Empresa**: SOLUCIONES INTEGRALES JS S.A.C.
 - **Ubicación**: Lima, Perú
 - **Teléfono**: +51 999 999 999
-- **Email**: contacto@solucionesintegralesjs.com
-- **Web**: https://solucionesintegralesjs.com
+- **Email**: contacto@solucionesintegralesjs.gargurevich.com
+- **Web**: https://solucionesintegralesjs.gargurevich.com
 
 ## Áreas de Cobertura
 Atendemos proyectos en todo el Perú, con base de operaciones en Lima Metropolitana.

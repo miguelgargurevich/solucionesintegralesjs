@@ -11,6 +11,82 @@ Este documento explica cómo configurar el CMS personalizado con Supabase.
 
 ## 🔧 Configuración de Supabase
 
+## 🐳 Base de datos local con Docker
+
+El repositorio ahora incluye un PostgreSQL local para validar el esquema sin tocar tu proyecto remoto de Supabase.
+
+### Qué levanta
+
+- Contenedor: `soluciones-integrales-db`
+- Contenedor: `soluciones-integrales-minio`
+- Motor: `postgres:16`
+- Host local: `localhost`
+- Puerto local: `5434`
+- Base de datos: `soluciones_integrales_local`
+- Usuario: `postgres`
+- Password: `postgres`
+- MinIO API: `http://localhost:9000`
+- MinIO Console: `http://localhost:9001`
+- MinIO bucket público: `images`
+
+### Comandos
+
+```bash
+npm run db:local:up
+npm run db:local:reset
+```
+
+`db:local:up` crea el contenedor si no existe.
+`db:local:reset` elimina el volumen y vuelve a aplicar desde cero:
+
+- `docker/postgres/init/00-local-bootstrap.sql`
+- `supabase-schema.sql`
+- `supabase-cms-schema.sql`
+
+Para usar MinIO local en uploads, agrega esto a tu `.env.local`:
+
+```env
+STORAGE_PROVIDER=minio
+MINIO_ENDPOINT=localhost
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=images
+MINIO_PUBLIC_URL=http://localhost:9000
+```
+
+Y para que la capa de datos use PostgreSQL local en vez de Supabase, agrega también:
+
+```env
+LOCAL_DATABASE_URL=postgresql://postgres:postgres@localhost:5434/soluciones_integrales_local
+```
+
+### Verificar conexión
+
+```bash
+psql postgresql://postgres:postgres@localhost:5434/soluciones_integrales_local
+```
+
+### Importante
+
+Esta base local replica el esquema y los datos semilla del CMS, pero no sustituye por sí sola a Supabase completo. Tu aplicación actual usa:
+
+- API REST de Supabase vía `@supabase/supabase-js`
+- claves `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` para endpoints admin
+- Supabase o MinIO para uploads, según `STORAGE_PROVIDER`
+
+La capa de datos del CMS ahora puede resolver consultas directamente contra PostgreSQL local usando `LOCAL_DATABASE_URL`.
+
+Eso significa que con solo PostgreSQL local:
+
+- puedes validar tablas, índices y semillas localmente
+- ya puedes mover uploads a MinIO local
+- auth del panel ya es local
+- datos del CMS ya pueden salir del PostgreSQL local
+- todavía dependerás de Supabase solo si eliges mantener `STORAGE_PROVIDER=supabase`
+
 ### 1. Crear un proyecto en Supabase
 
 1. Ve a [supabase.com](https://supabase.com) y crea una cuenta
@@ -25,6 +101,7 @@ Este documento explica cómo configurar el CMS personalizado con Supabase.
 Ve a **SQL Editor** en el panel de Supabase y ejecuta el contenido del archivo `supabase-schema.sql` que está en la raíz del proyecto.
 
 Esto creará:
+
 - Tabla `categories` (categorías de proyectos)
 - Tabla `projects` (proyectos)
 - Políticas de seguridad (RLS)
@@ -95,7 +172,7 @@ ADMIN_SECRET=una-clave-secreta-muy-larga-y-aleatoria
 
 ## 📁 Estructura del CMS
 
-```
+```text
 src/
 ├── app/
 │   ├── admin/
@@ -126,7 +203,7 @@ src/
 En tu proyecto de Vercel, ve a **Settings** > **Environment Variables** y agrega:
 
 | Variable | Valor |
-|----------|-------|
+| -------- | ----- |
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://tu-proyecto.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJI...` |
 | `ADMIN_USERNAME` | `admin` |

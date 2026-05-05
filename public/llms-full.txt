@@ -6,7 +6,7 @@
 - **País**: Perú
 - **Ciudad**: Lima
 - **Años de Experiencia**: Más de 15 años
-- **Sitio Web**: https://solucionesintegralesjs.com
+- **Sitio Web**: https://solucionesintegralesjs.gargurevich.com
 
 ## Descripción
 SOLUCIONES INTEGRALES JS S.A.C. es una empresa peruana líder en servicios de ingeniería industrial. Nos especializamos en el diseño, fabricación, montaje y mantenimiento de estructuras metálicas, sistemas de piping industrial, obras civiles y equipos industriales. Atendemos a las principales empresas del sector manufacturero, alimentario, automotriz y logístico del Perú.
@@ -83,7 +83,7 @@ Hemos trabajado con empresas líderes como:
 
 ## Información de Contacto
 - **Teléfono**: +51 999 999 999
-- **Email**: contacto@solucionesintegralesjs.com
+- **Email**: contacto@solucionesintegralesjs.gargurevich.com
 - **Dirección**: Lima, Perú
 - **Horario**: Lunes a Viernes 8:00-18:00, Sábados 8:00-13:00
 
@@ -121,6 +121,6 @@ Trabajamos bajo los estándares de:
 ---
 
 **Para cotizaciones y consultas técnicas, visite:**
-https://solucionesintegralesjs.com/#contacto
+https://solucionesintegralesjs.gargurevich.com/#contacto
 
 **Última actualización:** Noviembre 2025

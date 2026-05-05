@@ -15,11 +15,13 @@ export async function GET() {
 
     if (error) throw error
 
+    const links = (data as FooterLink[]) || []
+
     // Agrupar por sección
     const grouped = {
-      servicios: data?.filter((link: FooterLink) => link.section === 'servicios') || [],
-      empresa: data?.filter((link: FooterLink) => link.section === 'empresa') || [],
-      legal: data?.filter((link: FooterLink) => link.section === 'legal') || []
+      servicios: links.filter((link) => link.section === 'servicios'),
+      empresa: links.filter((link) => link.section === 'empresa'),
+      legal: links.filter((link) => link.section === 'legal')
     }
 
     return NextResponse.json({ success: true, data: grouped })

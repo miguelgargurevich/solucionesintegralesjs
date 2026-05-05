@@ -28,7 +28,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://solucionesintegralesjs.com'),
+  metadataBase: new URL('https://solucionesintegralesjs.gargurevich.com'),
   title: {
     default: 'SOLUCIONES INTEGRALES JS S.A.C. | Ingeniería Industrial de Excelencia en Perú',
     template: '%s | SOLUCIONES INTEGRALES JS S.A.C.',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     'naves industriales',
     'almacenes industriales',
   ],
-  authors: [{ name: 'SOLUCIONES INTEGRALES JS S.A.C.', url: 'https://solucionesintegralesjs.com' }],
+  authors: [{ name: 'SOLUCIONES INTEGRALES JS S.A.C.', url: 'https://solucionesintegralesjs.gargurevich.com' }],
   creator: 'SOLUCIONES INTEGRALES JS S.A.C.',
   publisher: 'SOLUCIONES INTEGRALES JS S.A.C.',
   formatDetection: {
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
     description: 'Empresa peruana líder en estructuras metálicas, piping industrial, montaje y mantenimiento. +15 años transformando la industria peruana.',
     type: 'website',
     locale: 'es_PE',
-    url: 'https://solucionesintegralesjs.com',
+    url: 'https://solucionesintegralesjs.gargurevich.com',
     siteName: 'SOLUCIONES INTEGRALES JS S.A.C.',
     images: [
       {
@@ -113,10 +113,10 @@ export const metadata: Metadata = {
     creator: '@solucionesjs',
   },
   alternates: {
-    canonical: 'https://solucionesintegralesjs.com',
+    canonical: 'https://solucionesintegralesjs.gargurevich.com',
     languages: {
-      'es-PE': 'https://solucionesintegralesjs.com',
-      'es': 'https://solucionesintegralesjs.com',
+      'es-PE': 'https://solucionesintegralesjs.gargurevich.com',
+      'es': 'https://solucionesintegralesjs.gargurevich.com',
     },
   },
   verification: {
@@ -141,13 +141,13 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'Organization',
-      '@id': 'https://solucionesintegralesjs.com/#organization',
+      '@id': 'https://solucionesintegralesjs.gargurevich.com/#organization',
       name: 'SOLUCIONES INTEGRALES JS S.A.C.',
       alternateName: 'Soluciones Integrales JS',
-      url: 'https://solucionesintegralesjs.com',
+      url: 'https://solucionesintegralesjs.gargurevich.com',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://solucionesintegralesjs.com/logo.png',
+        url: 'https://solucionesintegralesjs.gargurevich.com/logo.png',
         width: 512,
         height: 512,
       },
@@ -186,20 +186,20 @@ const jsonLd = {
     },
     {
       '@type': 'WebSite',
-      '@id': 'https://solucionesintegralesjs.com/#website',
-      url: 'https://solucionesintegralesjs.com',
+      '@id': 'https://solucionesintegralesjs.gargurevich.com/#website',
+      url: 'https://solucionesintegralesjs.gargurevich.com',
       name: 'SOLUCIONES INTEGRALES JS S.A.C.',
       description: 'Ingeniería Industrial de Excelencia en Perú',
       publisher: {
-        '@id': 'https://solucionesintegralesjs.com/#organization',
+        '@id': 'https://solucionesintegralesjs.gargurevich.com/#organization',
       },
       inLanguage: 'es-PE',
     },
     {
       '@type': ['LocalBusiness', 'ProfessionalService'],
-      '@id': 'https://solucionesintegralesjs.com/#localbusiness',
+      '@id': 'https://solucionesintegralesjs.gargurevich.com/#localbusiness',
       name: 'SOLUCIONES INTEGRALES JS S.A.C.',
-      image: 'https://solucionesintegralesjs.com/og-image.jpg',
+      image: 'https://solucionesintegralesjs.gargurevich.com/og-image.jpg',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Lima',
@@ -211,7 +211,7 @@ const jsonLd = {
         latitude: -12.0464,
         longitude: -77.0428,
       },
-      url: 'https://solucionesintegralesjs.com',
+      url: 'https://solucionesintegralesjs.gargurevich.com',
       telephone: '+51-999-999-999',
       priceRange: '$$',
       openingHoursSpecification: [

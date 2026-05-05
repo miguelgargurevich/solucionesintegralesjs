@@ -12,9 +12,11 @@ export async function GET() {
 
     if (error) throw error
 
+    const rows = (data as Array<{ key: string; value: unknown }>) || []
+
     // Convertir array a objeto con keys
     const settings: Record<string, unknown> = {}
-    data?.forEach((item: { key: string; value: unknown }) => {
+    rows.forEach((item) => {
       settings[item.key] = item.value
     })
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { uploadImage } from '@/lib/supabase'
+import { uploadImage } from '@/lib/storage'
 import { createHash } from 'crypto'
 
 // Verificar autenticación con el mismo sistema que otros endpoints
@@ -59,8 +59,8 @@ export async function POST(request: NextRequest) {
     const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg'
     const fileName = `${timestamp}-${Math.random().toString(36).substr(2, 9)}.${extension}`
     
-    // Subir a Supabase Storage
-    const url = await uploadImage(new Blob([buffer], { type: file.type }), fileName, folder)
+    // Subir al backend de storage configurado
+    const url = await uploadImage(buffer, fileName, folder, file.type)
     
     if (!url) {
       throw new Error('Error uploading to storage')
