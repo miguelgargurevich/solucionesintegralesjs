@@ -1,7 +1,7 @@
 import { Pool, type QueryResultRow } from 'pg'
 
 const defaultLocalDatabaseUrl = 'postgresql://postgres:postgres@localhost:5434/soluciones_integrales_local'
-const connectionString = process.env.LOCAL_DATABASE_URL || process.env.DATABASE_URL || defaultLocalDatabaseUrl
+const connectionString = process.env.DATABASE_URL || process.env.LOCAL_DATABASE_URL || defaultLocalDatabaseUrl
 
 let pool: Pool | null = null
 
