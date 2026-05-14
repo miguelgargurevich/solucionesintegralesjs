@@ -3,7 +3,9 @@ import { supabaseStorageAdminClient, supabaseStorageClient } from '@/lib/supabas
 
 type UploadSource = Blob | Buffer
 
-const storageProvider = process.env.STORAGE_PROVIDER || 'supabase'
+const storageProvider = (process.env.STORAGE_PROVIDER || 'supabase').toLowerCase()
+const isS3CompatibleProvider = storageProvider === 'r2' || storageProvider === 'minio'
+const isMinioProvider = storageProvider === 'minio'
 const r2AccountId = process.env.R2_ACCOUNT_ID || ''
 const r2Endpoint = process.env.R2_ENDPOINT || (r2AccountId ? `${r2AccountId}.r2.cloudflarestorage.com` : '')
 const r2Port = Number(process.env.R2_PORT || '443')
@@ -13,7 +15,30 @@ const r2SecretKey = process.env.R2_SECRET_ACCESS_KEY || ''
 const r2Bucket = process.env.R2_BUCKET || 'soluciones-integrales-bucket'
 const r2PathStyle = (process.env.R2_PATH_STYLE || 'false') === 'true'
 const defaultR2PublicUrl = r2Endpoint ? `https://${r2Bucket}.${r2Endpoint}` : ''
-const r2PublicUrl = (process.env.R2_PUBLIC_URL || defaultR2PublicUrl).replace(/\/$/, '')
+
+const minioEndpoint = process.env.MINIO_ENDPOINT || ''
+const minioPort = Number(process.env.MINIO_PORT || '9000')
+const minioUseSSL = (process.env.MINIO_USE_SSL || 'false') === 'true'
+const minioAccessKey = process.env.MINIO_ACCESS_KEY || ''
+const minioSecretKey = process.env.MINIO_SECRET_KEY || ''
+const minioBucket = process.env.MINIO_BUCKET || 'soluciones-integrales-bucket'
+const minioPathStyle = true
+const defaultMinioPublicUrl = minioEndpoint
+  ? `${minioUseSSL ? 'https' : 'http'}://${minioEndpoint}${minioPort ? `:${minioPort}` : ''}`
+  : ''
+
+const objectEndpoint = isMinioProvider ? (minioEndpoint || r2Endpoint) : (r2Endpoint || minioEndpoint)
+const objectPort = isMinioProvider ? minioPort : r2Port
+const objectUseSSL = isMinioProvider ? minioUseSSL : r2UseSSL
+const objectAccessKey = isMinioProvider ? (minioAccessKey || r2AccessKey) : (r2AccessKey || minioAccessKey)
+const objectSecretKey = isMinioProvider ? (minioSecretKey || r2SecretKey) : (r2SecretKey || minioSecretKey)
+const objectBucket = isMinioProvider ? (minioBucket || r2Bucket) : (r2Bucket || minioBucket)
+const objectPathStyle = isMinioProvider ? minioPathStyle : r2PathStyle
+const objectPublicUrl = (
+  isMinioProvider
+    ? (process.env.MINIO_PUBLIC_URL || process.env.R2_PUBLIC_URL || defaultMinioPublicUrl)
+    : (process.env.R2_PUBLIC_URL || defaultR2PublicUrl)
+).replace(/\/$/, '')
 
 let s3Client: S3CompatibleClient | null = null
 
@@ -23,12 +48,12 @@ function getS3Client() {
   }
 
   s3Client = new S3CompatibleClient({
-    endPoint: r2Endpoint,
-    port: r2Port,
-    useSSL: r2UseSSL,
-    accessKey: r2AccessKey,
-    secretKey: r2SecretKey,
-    pathStyle: r2PathStyle,
+    endPoint: objectEndpoint,
+    port: objectPort,
+    useSSL: objectUseSSL,
+    accessKey: objectAccessKey,
+    secretKey: objectSecretKey,
+    pathStyle: objectPathStyle,
   })
 
   return s3Client
@@ -55,10 +80,10 @@ export async function uploadImage(
 ): Promise<string | null> {
   const filePath = `${folder}/${fileName}`
 
-  if (storageProvider === 'r2') {
-    if (!r2Endpoint || !r2AccessKey || !r2SecretKey || !r2PublicUrl) {
+  if (isS3CompatibleProvider) {
+    if (!objectEndpoint || !objectAccessKey || !objectSecretKey || !objectPublicUrl) {
       console.error(
-        'Missing R2 configuration. Set R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, and R2_PUBLIC_URL.'
+        'Missing object storage configuration. Configure endpoint, credentials, bucket and public URL for the selected provider.'
       )
       return null
     }
@@ -67,13 +92,13 @@ export async function uploadImage(
       const buffer = await toBuffer(file)
       const client = getS3Client()
 
-      await client.putObject(r2Bucket, filePath, buffer, buffer.length, {
+      await client.putObject(objectBucket, filePath, buffer, buffer.length, {
         'Content-Type': contentType || 'application/octet-stream',
       })
 
-      return `${r2PublicUrl}/${filePath}`
+      return `${objectPublicUrl}/${filePath}`
     } catch (error) {
-      console.error('Error uploading image to R2:', error)
+      console.error('Error uploading image to object storage:', error)
       return null
     }
   }
@@ -104,17 +129,17 @@ export async function uploadImage(
 }
 
 export async function deleteImage(url: string): Promise<boolean> {
-  if (storageProvider === 'r2') {
+  if (isS3CompatibleProvider) {
     try {
       let objectPath = ''
 
-      if (r2PublicUrl && url.startsWith(r2PublicUrl)) {
-        objectPath = url.slice(r2PublicUrl.length).replace(/^\//, '')
+      if (objectPublicUrl && url.startsWith(objectPublicUrl)) {
+        objectPath = url.slice(objectPublicUrl.length).replace(/^\//, '')
       } else {
         const parsedUrl = new URL(url)
         objectPath = parsedUrl.pathname.replace(/^\//, '')
-        if (objectPath.startsWith(`${r2Bucket}/`)) {
-          objectPath = objectPath.slice(r2Bucket.length + 1)
+        if (objectPath.startsWith(`${objectBucket}/`)) {
+          objectPath = objectPath.slice(objectBucket.length + 1)
         }
       }
 
@@ -122,10 +147,10 @@ export async function deleteImage(url: string): Promise<boolean> {
         return false
       }
 
-      await getS3Client().removeObject(r2Bucket, objectPath)
+      await getS3Client().removeObject(objectBucket, objectPath)
       return true
     } catch (error) {
-      console.error('Error deleting image from R2:', error)
+      console.error('Error deleting image from object storage:', error)
       return false
     }
   }

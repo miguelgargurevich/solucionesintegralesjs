@@ -6,7 +6,7 @@ Landing + CMS para una empresa industrial, construido con Next.js 14 (App Router
 
 - Frontend + backend en una sola app Next.js (rutas en src/app/api)
 - Base de datos: PostgreSQL (Neon en produccion, PostgreSQL local en desarrollo)
-- Storage de imagenes: Cloudflare R2 (S3-compatible)
+- Storage de imagenes: MinIO o Cloudflare R2 (S3-compatible)
 - Email: Resend
 - Deploy recomendado: Vercel
 
@@ -18,7 +18,7 @@ Landing + CMS para una empresa industrial, construido con Next.js 14 (App Router
 - Tailwind CSS 3
 - Framer Motion
 - PostgreSQL + pg
-- Cloudflare R2 (cliente S3-compatible via minio SDK)
+- MinIO / Cloudflare R2 (cliente S3-compatible via minio SDK)
 - Resend
 
 ## Estructura principal
@@ -29,7 +29,7 @@ Landing + CMS para una empresa industrial, construido con Next.js 14 (App Router
 - src/app/api: endpoints publicos del sitio
 - src/components: secciones y componentes UI
 - src/lib/supabase.ts: capa de datos (adaptada a PostgreSQL directo)
-- src/lib/storage.ts: capa de storage (R2 o fallback Supabase)
+- src/lib/storage.ts: capa de storage (MinIO/R2 o fallback Supabase)
 
 ## Requisitos
 
@@ -71,23 +71,21 @@ ADMIN_SECRET=tu-secret-largo-y-unico
 RESEND_API_KEY=re_xxx
 CONTACT_EMAIL=contacto@tudominio.com
 
-STORAGE_PROVIDER=r2
-R2_ACCOUNT_ID=tu_account_id
-R2_ENDPOINT=tu_account_id.r2.cloudflarestorage.com
-R2_PORT=443
-R2_USE_SSL=true
-R2_ACCESS_KEY_ID=tu_access_key
-R2_SECRET_ACCESS_KEY=tu_secret_key
-R2_BUCKET=soluciones-integrales-bucket
-R2_PUBLIC_URL=https://pub-xxxx.r2.dev
-R2_PATH_STYLE=false
+STORAGE_PROVIDER=minio
+MINIO_ENDPOINT=minio
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY=admin
+MINIO_SECRET_KEY=tu_secret
+MINIO_BUCKET=soluciones-integrales-bucket
+MINIO_PUBLIC_URL=http://minio:9000
 ```
 
 Notas:
 
 - En local puedes usar LOCAL_DATABASE_URL para apuntar a PostgreSQL Docker.
-- STORAGE_PROVIDER admite r2 (recomendado) y supabase (fallback).
-- Si usas r2, valida que el bucket tenga acceso publico para servir imagenes.
+- STORAGE_PROVIDER admite minio, r2 y supabase (fallback).
+- Si usas minio o r2, valida que MINIO_PUBLIC_URL / R2_PUBLIC_URL sea accesible desde el navegador.
 
 ## Base de datos
 

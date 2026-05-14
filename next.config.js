@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const r2PublicUrl = process.env.R2_PUBLIC_URL || ''
+const minioPublicUrl = process.env.MINIO_PUBLIC_URL || ''
 const knownR2PublicHost = 'pub-bda40c407bfa46509c3a0aa7e7223a73.r2.dev'
 
-const r2RemotePattern = (() => {
-  if (!r2PublicUrl) {
+const buildRemotePattern = (url) => {
+  if (!url) {
     return null
   }
 
   try {
-    const parsed = new URL(r2PublicUrl)
+    const parsed = new URL(url)
     return {
       protocol: parsed.protocol.replace(':', ''),
       hostname: parsed.hostname,
@@ -18,7 +19,10 @@ const r2RemotePattern = (() => {
   } catch {
     return null
   }
-})()
+}
+
+const r2RemotePattern = buildRemotePattern(r2PublicUrl)
+const minioRemotePattern = buildRemotePattern(minioPublicUrl)
 
 const nextConfig = {
   reactStrictMode: true,
@@ -54,7 +58,13 @@ const nextConfig = {
         hostname: knownR2PublicHost,
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'minio',
+        pathname: '/**',
+      },
       ...(r2RemotePattern ? [r2RemotePattern] : []),
+      ...(minioRemotePattern ? [minioRemotePattern] : []),
     ],
     unoptimized: true,
   },

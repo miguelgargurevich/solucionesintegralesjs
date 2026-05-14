@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       type: file?.type,
       size: file?.size,
       storageProvider: process.env.STORAGE_PROVIDER,
-      hasR2PublicUrl: Boolean(process.env.R2_PUBLIC_URL),
+      hasObjectStoragePublicUrl: Boolean(process.env.MINIO_PUBLIC_URL || process.env.R2_PUBLIC_URL),
     })
     
     if (!file) {
