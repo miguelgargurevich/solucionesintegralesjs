@@ -1,7 +1,36 @@
 import { Pool, type QueryResultRow } from 'pg'
 
 const defaultLocalDatabaseUrl = 'postgresql://postgres:postgres@localhost:5434/soluciones_integrales_local'
-const connectionString = process.env.DATABASE_URL || process.env.LOCAL_DATABASE_URL || defaultLocalDatabaseUrl
+
+function normalizeConnectionString(rawUrl: string): string {
+  if (!rawUrl.startsWith('jdbc:postgresql://')) {
+    return rawUrl
+  }
+
+  try {
+    const parsed = new URL(rawUrl.replace(/^jdbc:/, ''))
+    const queryUser = parsed.searchParams.get('user')
+    const queryPassword = parsed.searchParams.get('password')
+
+    if (queryUser && !parsed.username) {
+      parsed.username = queryUser
+    }
+
+    if (queryPassword && !parsed.password) {
+      parsed.password = queryPassword
+    }
+
+    parsed.searchParams.delete('user')
+    parsed.searchParams.delete('password')
+
+    return parsed.toString()
+  } catch {
+    return rawUrl
+  }
+}
+
+const rawConnectionString = process.env.DATABASE_URL || process.env.LOCAL_DATABASE_URL || defaultLocalDatabaseUrl
+const connectionString = normalizeConnectionString(rawConnectionString)
 
 let pool: Pool | null = null
 
